@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { AdminRoute } from "@/components/auth/AdminRoute";
 
 // Layouts
 import { PublicLayout } from "@/components/layout/PublicLayout";
@@ -69,7 +70,7 @@ const App = () => {
                 <Route path="tests" element={<TestRunsPage />} />
                 <Route path="workspace" element={<WorkspacePage />} />
                 <Route path="billing" element={<BillingPage />} />
-                <Route path="admin" element={<AdminPage />} />
+                <Route path="admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
               </Route>
 
               {/* Catch-all */}
