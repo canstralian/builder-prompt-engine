@@ -9,9 +9,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 export function AppHeader() {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  // Get user display name from metadata or email
+  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
+  const email = user?.email || "";
+
   return (
     <header className="h-16 border-b border-border bg-background flex items-center justify-between px-6">
       {/* Search */}
@@ -43,8 +56,8 @@ export function AppHeader() {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col">
-                <span className="font-medium">Demo User</span>
-                <span className="text-xs text-muted-foreground">demo@promptcrafting.net</span>
+                <span className="font-medium">{displayName}</span>
+                <span className="text-xs text-muted-foreground">{email}</span>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -60,11 +73,12 @@ export function AppHeader() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link to="/" className="text-destructive focus:text-destructive">
-                <LogOut className="mr-2 h-4 w-4" />
-                Log out
-              </Link>
+            <DropdownMenuItem 
+              onClick={handleSignOut}
+              className="text-destructive focus:text-destructive cursor-pointer"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
