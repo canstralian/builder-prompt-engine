@@ -96,7 +96,7 @@ export default function PromptBuilderPage() {
 
   const handleSave = () => {
     // Save logic would go here
-    console.log("Saving prompt:", formData);
+    // Note: Actual save to database will be implemented with prompts table
     window.location.href = "/app/library";
   };
 
