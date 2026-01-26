@@ -4,51 +4,75 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import DOMPurify from "dompurify";
 
 function estimateReadTime(markdown: string): number {
   const words = markdown.split(/\s+/).length;
   return Math.max(1, Math.ceil(words / 200));
 }
 
+// Escape HTML entities to prevent XSS before processing markdown
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  };
+  return text.replace(/[&<>"']/g, (char) => map[char]);
+}
+
 function MarkdownRenderer({ content }: { content: string }) {
-  // Simple markdown to HTML conversion for headings, bold, lists, code
+  // Process markdown with proper HTML escaping and sanitization
   const html = content
     .split("\n")
     .map((line) => {
-      // Headers
+      // Headers - escape content first
       if (line.startsWith("# ")) {
-        return `<h1 class="text-3xl font-bold mt-8 mb-4">${line.slice(2)}</h1>`;
+        return `<h1 class="text-3xl font-bold mt-8 mb-4">${escapeHtml(line.slice(2))}</h1>`;
       }
       if (line.startsWith("## ")) {
-        return `<h2 class="text-2xl font-semibold mt-6 mb-3">${line.slice(3)}</h2>`;
+        return `<h2 class="text-2xl font-semibold mt-6 mb-3">${escapeHtml(line.slice(3))}</h2>`;
       }
       if (line.startsWith("### ")) {
-        return `<h3 class="text-xl font-semibold mt-4 mb-2">${line.slice(4)}</h3>`;
+        return `<h3 class="text-xl font-semibold mt-4 mb-2">${escapeHtml(line.slice(4))}</h3>`;
       }
-      // Bold
-      line = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      
+      // Escape the line first, then apply safe markdown transformations
+      let escapedLine = escapeHtml(line);
+      
+      // Bold (using escaped HTML entities for asterisks)
+      escapedLine = escapedLine.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
       // Inline code
-      line = line.replace(/`([^`]+)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
+      escapedLine = escapedLine.replace(/`([^`]+)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
+      
       // Lists
       if (line.startsWith("- ")) {
-        return `<li class="ml-4 list-disc">${line.slice(2)}</li>`;
+        return `<li class="ml-4 list-disc">${escapeHtml(line.slice(2))}</li>`;
       }
       if (/^\d+\)\s/.test(line)) {
-        return `<li class="ml-4 list-decimal">${line.replace(/^\d+\)\s/, "")}</li>`;
+        return `<li class="ml-4 list-decimal">${escapeHtml(line.replace(/^\d+\)\s/, ""))}</li>`;
       }
       // Empty lines
       if (line.trim() === "") {
         return "<br />";
       }
       // Regular paragraph
-      return `<p class="mb-2">${line}</p>`;
+      return `<p class="mb-2">${escapedLine}</p>`;
     })
     .join("");
+
+  // Sanitize the final HTML output with DOMPurify
+  const sanitizedHtml = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'strong', 'code', 'li', 'br'],
+    ALLOWED_ATTR: ['class'],
+  });
 
   return (
     <div
       className="prose prose-neutral dark:prose-invert max-w-none"
-      dangerouslySetInnerHTML={{ __html: html }}
+      dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
     />
   );
 }
