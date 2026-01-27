@@ -25,6 +25,13 @@ interface ValidationError {
   field?: string;
 }
 
+// UUID validation regex
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function isValidUUID(id: string): boolean {
+  return UUID_REGEX.test(id);
+}
+
 function validateRequest(body: unknown): { data: CreateDraftRequest } | { error: ValidationError } {
   if (!body || typeof body !== "object") {
     return { error: { code: "invalid_request", message: "Request body must be a JSON object" } };
@@ -177,148 +184,265 @@ function compilePrompt(sections: Record<string, unknown>, outputFormat: OutputFo
   return parts.join("\n\n");
 }
 
+// Extract draft ID from URL path (e.g., /drafts/uuid or /drafts/uuid/)
+function extractDraftId(url: URL): string | null {
+  const pathParts = url.pathname.split("/").filter(Boolean);
+  // Expected: ["drafts", "<uuid>"]
+  if (pathParts.length >= 2 && pathParts[0] === "drafts") {
+    return pathParts[1];
+  }
+  return null;
+}
+
+// Get authenticated user ID from auth header
+async function getAuthenticatedUserId(
+  authHeader: string | null,
+  supabaseUrl: string,
+  supabaseAnonKey: string
+): Promise<string | null> {
+  if (!authHeader?.startsWith("Bearer ")) {
+    return null;
+  }
+
+  const userClient = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
+
+  const { data: { user }, error: userError } = await userClient.auth.getUser();
+
+  if (userError || !user?.id) {
+    return null;
+  }
+
+  return user.id;
+}
+
+// Handle GET /drafts/:id
+async function handleGetDraft(
+  req: Request,
+  draftId: string
+): Promise<Response> {
+  // Validate UUID format
+  if (!isValidUUID(draftId)) {
+    return new Response(
+      JSON.stringify({ error: { code: "invalid_request", message: "Invalid draft ID format" } }),
+      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+
+  // Get authenticated user (if any)
+  const authHeader = req.headers.get("Authorization");
+  const userId = await getAuthenticatedUserId(authHeader, supabaseUrl, supabaseAnonKey);
+
+  // Get session ID from cookie (for anonymous users)
+  const cookieHeader = req.headers.get("Cookie");
+  const sessionId = parseSessionCookie(cookieHeader);
+
+  // Fetch draft using service role (bypasses RLS)
+  const serviceClient = createClient(supabaseUrl, supabaseServiceKey);
+
+  const { data: draft, error: fetchError } = await serviceClient
+    .from("drafts")
+    .select("*")
+    .eq("id", draftId)
+    .maybeSingle();
+
+  if (fetchError) {
+    console.error("Draft fetch error:", fetchError);
+    return new Response(
+      JSON.stringify({ error: { code: "internal_error", message: "Failed to fetch draft" } }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  // Draft not found
+  if (!draft) {
+    return new Response(
+      JSON.stringify({ error: { code: "not_found", message: "Draft not found" } }),
+      { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  // Check expiration
+  if (draft.expires_at && new Date(draft.expires_at) < new Date()) {
+    return new Response(
+      JSON.stringify({ error: { code: "not_found", message: "Draft has expired" } }),
+      { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  // Ownership validation
+  const isOwner = 
+    (userId && draft.owner_user_id === userId) ||
+    (sessionId && draft.owner_session_id === sessionId);
+
+  if (!isOwner) {
+    console.log(`Access denied: userId=${userId}, sessionId=${sessionId}, draftOwnerUserId=${draft.owner_user_id}, draftOwnerSessionId=${draft.owner_session_id}`);
+    return new Response(
+      JSON.stringify({ error: { code: "forbidden", message: "You do not have access to this draft" } }),
+      { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  console.log(`Draft fetched: ${draftId} by ${userId ? `user ${userId}` : `session ${sessionId}`}`);
+
+  // Return draft data
+  return new Response(
+    JSON.stringify({
+      id: draft.id,
+      source: draft.source,
+      goal: draft.goal,
+      outputFormat: draft.output_format,
+      context: draft.context,
+      sectionsJson: draft.sections_json,
+      compiledPrompt: draft.compiled_prompt,
+      metaJson: draft.meta_json,
+      createdAt: draft.created_at,
+      updatedAt: draft.updated_at,
+      expiresAt: draft.expires_at,
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+  );
+}
+
+// Handle POST /drafts (create new draft)
+async function handleCreateDraft(req: Request): Promise<Response> {
+  // Parse request body
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return new Response(
+      JSON.stringify({ error: { code: "invalid_request", message: "Invalid JSON body" } }),
+      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  // Validate input
+  const validation = validateRequest(body);
+  if ("error" in validation) {
+    return new Response(
+      JSON.stringify({ error: validation.error }),
+      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  const { source, goal, outputFormat, context, generate } = validation.data;
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+
+  // Get authenticated user (if any)
+  const authHeader = req.headers.get("Authorization");
+  const userId = await getAuthenticatedUserId(authHeader, supabaseUrl, supabaseAnonKey);
+
+  // Handle session for anonymous users
+  const cookieHeader = req.headers.get("Cookie");
+  let sessionId = parseSessionCookie(cookieHeader);
+  let newSessionCookie: string | null = null;
+
+  if (!userId) {
+    // Anonymous user - create or use existing session
+    if (!sessionId) {
+      sessionId = generateSessionId();
+      newSessionCookie = createSessionCookie(sessionId);
+    }
+  }
+
+  // Generate sections scaffold
+  const sectionsJson = generateSectionsScaffold(goal, outputFormat, context);
+
+  // Compile prompt if generate flag is true
+  const compiledPrompt = generate ? compilePrompt(sectionsJson, outputFormat) : null;
+
+  // Calculate expiration (30 days from now)
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 30);
+
+  // Create draft using service role client
+  const serviceClient = createClient(supabaseUrl, supabaseServiceKey);
+
+  const { data: draft, error: insertError } = await serviceClient
+    .from("drafts")
+    .insert({
+      source,
+      goal,
+      output_format: outputFormat,
+      context: context || null,
+      owner_user_id: userId,
+      owner_session_id: userId ? null : sessionId,
+      sections_json: sectionsJson,
+      compiled_prompt: compiledPrompt,
+      expires_at: expiresAt.toISOString(),
+    })
+    .select("id, created_at")
+    .single();
+
+  if (insertError) {
+    console.error("Draft insert error:", insertError);
+    return new Response(
+      JSON.stringify({ error: { code: "internal_error", message: "Failed to create draft" } }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  console.log(`Draft created: ${draft.id} for ${userId ? `user ${userId}` : `session ${sessionId}`}`);
+
+  // Build response headers
+  const responseHeaders: Record<string, string> = {
+    ...corsHeaders,
+    "Content-Type": "application/json",
+  };
+
+  if (newSessionCookie) {
+    responseHeaders["Set-Cookie"] = newSessionCookie;
+  }
+
+  return new Response(
+    JSON.stringify({
+      draftId: draft.id,
+      createdAt: draft.created_at,
+      generated: !!generate,
+    }),
+    { status: 201, headers: responseHeaders }
+  );
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Only allow POST
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: { code: "method_not_allowed", message: "Only POST is allowed" } }), {
-      status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
+  const url = new URL(req.url);
+  const draftId = extractDraftId(url);
 
   try {
-    // Parse request body
-    let body: unknown;
-    try {
-      body = await req.json();
-    } catch {
-      return new Response(JSON.stringify({ error: { code: "invalid_request", message: "Invalid JSON body" } }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    // GET /drafts/:id - Fetch a draft
+    if (req.method === "GET" && draftId) {
+      return await handleGetDraft(req, draftId);
     }
 
-    // Validate input
-    const validation = validateRequest(body);
-    if ("error" in validation) {
-      return new Response(JSON.stringify({ error: validation.error }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    // POST /drafts - Create a draft
+    if (req.method === "POST" && !draftId) {
+      return await handleCreateDraft(req);
     }
 
-    const { source, goal, outputFormat, context, generate } = validation.data;
-
-    // Initialize Supabase client with service role for draft creation
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-
-    // Check for authenticated user
-    const authHeader = req.headers.get("Authorization");
-    let userId: string | null = null;
-
-    if (authHeader?.startsWith("Bearer ")) {
-      const userClient = createClient(supabaseUrl, supabaseAnonKey, {
-        global: { headers: { Authorization: authHeader } },
-      });
-
-      const { data: { user }, error: userError } = await userClient.auth.getUser();
-
-      if (!userError && user?.id) {
-        userId = user.id;
-      }
-    }
-
-    // Handle session for anonymous users
-    const cookieHeader = req.headers.get("Cookie");
-    let sessionId = parseSessionCookie(cookieHeader);
-    let newSessionCookie: string | null = null;
-
-    if (!userId) {
-      // Anonymous user - create or use existing session
-      if (!sessionId) {
-        sessionId = generateSessionId();
-        newSessionCookie = createSessionCookie(sessionId);
-      }
-    }
-
-    // Generate sections scaffold
-    const sectionsJson = generateSectionsScaffold(goal, outputFormat, context);
-
-    // Compile prompt if generate flag is true
-    const compiledPrompt = generate ? compilePrompt(sectionsJson, outputFormat) : null;
-
-    // Calculate expiration (30 days from now)
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30);
-
-    // Create draft using service role client
-    const serviceClient = createClient(supabaseUrl, supabaseServiceKey);
-
-    const { data: draft, error: insertError } = await serviceClient
-      .from("drafts")
-      .insert({
-        source,
-        goal,
-        output_format: outputFormat,
-        context: context || null,
-        owner_user_id: userId,
-        owner_session_id: userId ? null : sessionId,
-        sections_json: sectionsJson,
-        compiled_prompt: compiledPrompt,
-        expires_at: expiresAt.toISOString(),
-      })
-      .select("id, created_at")
-      .single();
-
-    if (insertError) {
-      console.error("Draft insert error:", insertError);
-      return new Response(
-        JSON.stringify({ error: { code: "internal_error", message: "Failed to create draft" } }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    console.log(`Draft created: ${draft.id} for ${userId ? `user ${userId}` : `session ${sessionId}`}`);
-
-    // Build response headers
-    const responseHeaders: Record<string, string> = {
-      ...corsHeaders,
-      "Content-Type": "application/json",
-    };
-
-    if (newSessionCookie) {
-      responseHeaders["Set-Cookie"] = newSessionCookie;
-    }
-
+    // Method not allowed
     return new Response(
-      JSON.stringify({
-        draftId: draft.id,
-        createdAt: draft.created_at,
-        generated: !!generate,
-      }),
-      {
-        status: 201,
-        headers: responseHeaders,
-      }
+      JSON.stringify({ error: { code: "method_not_allowed", message: "Method not allowed" } }),
+      { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("Unexpected error:", error);
     return new Response(
       JSON.stringify({ error: { code: "internal_error", message: "An unexpected error occurred" } }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
