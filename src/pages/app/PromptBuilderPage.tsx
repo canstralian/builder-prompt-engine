@@ -52,9 +52,23 @@ const tones = [
   "Educational",
 ];
 
+interface FormData {
+  title: string;
+  goal: string;
+  audience: string;
+  context: string;
+  constraints: string;
+  tone: string;
+  verbosity: string;
+  format: string;
+  safety: string;
+  outputSchema: string;
+  variables: { name: string; type: string; required: boolean }[];
+}
+
 export default function PromptBuilderPage() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     goal: "",
     audience: "",
@@ -65,10 +79,10 @@ export default function PromptBuilderPage() {
     format: "text",
     safety: "",
     outputSchema: "",
-    variables: [] as { name: string; type: string; required: boolean }[],
+    variables: [],
   });
 
-  const updateFormData = (field: string, value: any) => {
+  const updateFormData = <K extends keyof FormData>(field: K, value: FormData[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 

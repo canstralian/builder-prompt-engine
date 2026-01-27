@@ -6,13 +6,13 @@ import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import DOMPurify from "dompurify";
 
-function estimateReadTime(markdown: string): number {
+export function estimateReadTime(markdown: string): number {
   const words = markdown.split(/\s+/).length;
   return Math.max(1, Math.ceil(words / 200));
 }
 
 // Escape HTML entities to prevent XSS before processing markdown
-function escapeHtml(text: string): string {
+export function escapeHtml(text: string): string {
   const map: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
