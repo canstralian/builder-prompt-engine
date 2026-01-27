@@ -1,73 +1,176 @@
-# Welcome to your Lovable project
+# Builder Prompt Engine
 
-## Project info
+A modern SaaS platform for building, testing, and managing AI prompts. Built with React, TypeScript, Vite, and Supabase.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Tech Stack
 
-## How can I edit this code?
+- **Frontend**: React 18, TypeScript, Vite
+- **UI**: shadcn/ui, Tailwind CSS, Radix UI
+- **Backend**: Supabase (PostgreSQL + Auth)
+- **State**: TanStack React Query
+- **Testing**: Vitest, React Testing Library
 
-There are several ways of editing your application.
+## Quick Start
 
-**Use Lovable**
+### Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Node.js 20+ (install via [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+- npm 10+
+- Supabase project (for backend)
 
-Changes made via Lovable will be committed automatically to this repo.
+### Installation
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone the repository
 git clone <YOUR_GIT_URL>
+cd builder-prompt-engine
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Install dependencies
+npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at http://localhost:8080
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Environment Setup
 
-**Use GitHub Codespaces**
+Create a `.env.local` file with your Supabase credentials:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+```
 
-## What technologies are used for this project?
+## Development
 
-This project is built with:
+### Available Scripts
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```bash
+npm run dev      # Start development server
+npm run build    # Production build
+npm run preview  # Preview production build
+npm run lint     # Run ESLint
+npm run test     # Run tests once
+npm run test:watch  # Run tests in watch mode
+```
 
-## How can I deploy this project?
+### Verification Checklist
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Before committing changes, run the full verification suite:
 
-## Can I connect a custom domain to my Lovable project?
+```bash
+# 1. Lint check (should pass with only warnings)
+npm run lint
 
-Yes, you can!
+# 2. Type check
+npx tsc --noEmit
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# 3. Run tests (24 tests should pass)
+npm run test
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+# 4. Production build
+npm run build
+```
+
+All checks must pass before merging to main.
+
+## Project Structure
+
+```
+src/
+├── components/       # React components
+│   ├── ui/          # shadcn/ui components
+│   ├── layout/      # Layout components
+│   └── auth/        # Auth-related components
+├── hooks/           # Custom React hooks
+├── integrations/    # External service integrations
+│   └── supabase/    # Supabase client and types
+├── lib/             # Utility functions
+├── pages/           # Page components
+│   └── app/         # Protected app pages
+└── test/            # Test setup
+```
+
+## Architecture
+
+### Authentication
+
+- Uses Supabase Auth with email/password
+- `AuthProvider` context for auth state management
+- `ProtectedRoute` for authenticated routes
+- `AdminRoute` for admin-only routes
+- Role-based access control via `user_roles` table
+
+### Error Handling
+
+- `ErrorBoundary` component wraps the entire app
+- React Query handles async error states
+- Graceful fallbacks for failed data fetches
+
+### Security
+
+- HTML escaping and DOMPurify sanitization for user content
+- Row-Level Security (RLS) enabled on all Supabase tables
+- Input validation via Zod schemas
+- XSS prevention in markdown rendering
+
+## CI/CD
+
+GitHub Actions runs on every push and PR:
+- **Lint**: ESLint validation
+- **Type Check**: TypeScript compilation
+- **Test**: Vitest unit tests
+- **Build**: Production build
+- **Security**: npm audit
+
+## Testing
+
+Tests are located next to the files they test (`*.test.ts` or `*.test.tsx`).
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run specific test file
+npx vitest run src/lib/utils.test.ts
+```
+
+### Test Coverage
+
+Currently tested:
+- `cn()` utility function
+- `escapeHtml()` XSS prevention
+- `estimateReadTime()` calculations
+- `useAuth()` context validation
+
+## Deployment
+
+### Via Lovable
+
+1. Open [Lovable](https://lovable.dev)
+2. Navigate to your project
+3. Click Share > Publish
+
+### Manual Deployment
+
+```bash
+npm run build
+# Deploy the `dist/` folder to your hosting provider
+```
+
+## Contributing
+
+1. Create a feature branch
+2. Make changes
+3. Run verification checklist
+4. Submit PR
+5. CI must pass before merge
+
+## License
+
+Private - All rights reserved

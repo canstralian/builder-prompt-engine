@@ -19,6 +19,12 @@ export function useAdminStats() {
         supabase.from('user_roles').select('id', { count: 'exact', head: true }).eq('role', 'admin'),
       ]);
 
+      // Check for errors in any of the queries
+      const errors = [usersResult.error, postsResult.error, categoriesResult.error, adminsResult.error].filter(Boolean);
+      if (errors.length > 0) {
+        throw new Error(`Failed to fetch admin stats: ${errors.map(e => e?.message).join(', ')}`);
+      }
+
       return {
         totalUsers: usersResult.count ?? 0,
         totalPosts: postsResult.count ?? 0,
