@@ -167,7 +167,7 @@ This is a Single Page Application. Configure your hosting to redirect all routes
 
 **Netlify** - Create `public/_redirects`:
 ```
-/*    /index.html   200
+/* /index.html   200
 ```
 
 **Vercel** - Create `vercel.json`:
