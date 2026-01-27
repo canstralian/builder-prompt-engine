@@ -67,7 +67,7 @@ npm run lint
 # 2. Type check
 npx tsc --noEmit
 
-# 3. Run tests (24 tests should pass)
+# 3. Run tests (all tests should pass)
 npm run test
 
 # 4. Production build
