@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.customer-portal]
 verify_jwt = false
+
+[functions.run-prompt-test]
+verify_jwt = false

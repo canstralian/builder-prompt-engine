@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,55 +10,12 @@ import {
   AlertCircle,
   ArrowRight,
   Filter,
+  Plus,
+  Loader2,
 } from "lucide-react";
-
-const testRuns = [
-  {
-    id: "1",
-    promptTitle: "Marketing Email Generator",
-    promptId: "1",
-    status: "passed",
-    score: 4.2,
-    createdAt: "2 hours ago",
-    inputPreview: "Product: AI Writing Assistant, Audience: Content creators...",
-  },
-  {
-    id: "2",
-    promptTitle: "Code Review Assistant",
-    promptId: "2",
-    status: "failed",
-    score: 2.1,
-    createdAt: "5 hours ago",
-    inputPreview: "Code: function processData(arr) { return arr.map(x => x * 2) }...",
-  },
-  {
-    id: "3",
-    promptTitle: "Product Description Writer",
-    promptId: "3",
-    status: "passed",
-    score: 4.8,
-    createdAt: "1 day ago",
-    inputPreview: "Product: Wireless Earbuds, Features: Noise cancellation...",
-  },
-  {
-    id: "4",
-    promptTitle: "Blog Post Outline",
-    promptId: "5",
-    status: "warning",
-    score: 3.5,
-    createdAt: "1 day ago",
-    inputPreview: "Topic: AI in Healthcare, Keywords: machine learning, diagnosis...",
-  },
-  {
-    id: "5",
-    promptTitle: "Marketing Email Generator",
-    promptId: "1",
-    status: "passed",
-    score: 4.5,
-    createdAt: "2 days ago",
-    inputPreview: "Product: Project Management Tool, Audience: Startup founders...",
-  },
-];
+import { useTestRuns } from "@/hooks/useTestRuns";
+import { NewTestRunDialog } from "@/components/test-runs/NewTestRunDialog";
+import { formatDistanceToNow } from "date-fns";
 
 const StatusIcon = ({ status }: { status: string }) => {
   switch (status) {
@@ -67,16 +25,19 @@ const StatusIcon = ({ status }: { status: string }) => {
       return <XCircle className="h-4 w-4 text-red-500" />;
     case "warning":
       return <AlertCircle className="h-4 w-4 text-amber-500" />;
+    case "pending":
+      return <Clock className="h-4 w-4 text-muted-foreground" />;
     default:
       return null;
   }
 };
 
 const StatusBadge = ({ status }: { status: string }) => {
-  const variants: Record<string, "success" | "destructive" | "accent" | "muted"> = {
+  const variants: Record<string, "success" | "destructive" | "accent" | "muted" | "secondary"> = {
     passed: "success",
     failed: "destructive",
     warning: "accent",
+    pending: "secondary",
   };
 
   return (
@@ -87,6 +48,9 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 export default function TestRunsPage() {
+  const { testRuns, isLoading, stats, refetch } = useTestRuns();
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -94,77 +58,94 @@ export default function TestRunsPage() {
         <div>
           <h1 className="text-2xl font-bold">Test Runs</h1>
           <p className="text-muted-foreground">
-            View and analyze your prompt test results
+            Test your prompts and evaluate their quality
           </p>
         </div>
-        <Button variant="outline">
-          <Filter className="mr-2 h-4 w-4" />
-          Filter
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <Filter className="mr-2 h-4 w-4" />
+            Filter
+          </Button>
+          <Button onClick={() => setDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Test
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="p-4 rounded-lg border border-border bg-card">
-          <p className="text-2xl font-bold">156</p>
+          <p className="text-2xl font-bold">{stats.total}</p>
           <p className="text-sm text-muted-foreground">Total runs</p>
         </div>
         <div className="p-4 rounded-lg border border-border bg-card">
-          <p className="text-2xl font-bold text-emerald-500">82%</p>
+          <p className="text-2xl font-bold text-emerald-500">
+            {stats.total > 0 ? `${stats.passRate}%` : "—"}
+          </p>
           <p className="text-sm text-muted-foreground">Pass rate</p>
         </div>
         <div className="p-4 rounded-lg border border-border bg-card">
-          <p className="text-2xl font-bold">4.1</p>
+          <p className="text-2xl font-bold">{stats.avgScore}</p>
           <p className="text-sm text-muted-foreground">Avg. score</p>
         </div>
         <div className="p-4 rounded-lg border border-border bg-card">
-          <p className="text-2xl font-bold">12</p>
+          <p className="text-2xl font-bold">{stats.thisWeek}</p>
           <p className="text-sm text-muted-foreground">This week</p>
         </div>
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      )}
+
       {/* Test Runs List */}
-      <div className="space-y-3">
-        {testRuns.map((run) => (
-          <Link
-            key={run.id}
-            to={`/app/prompts/${run.promptId}`}
-            className="flex items-center justify-between p-4 rounded-lg border border-border bg-card hover:shadow-md transition-all group"
-          >
-            <div className="flex items-center gap-4 flex-1 min-w-0">
-              <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                <FlaskConical className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="font-medium truncate">{run.promptTitle}</p>
-                  <StatusIcon status={run.status} />
+      {!isLoading && testRuns.length > 0 && (
+        <div className="space-y-3">
+          {testRuns.map((run) => (
+            <div
+              key={run.id}
+              className="flex items-center justify-between p-4 rounded-lg border border-border bg-card hover:shadow-md transition-all group"
+            >
+              <div className="flex items-center gap-4 flex-1 min-w-0">
+                <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                  <FlaskConical className="h-5 w-5 text-muted-foreground" />
                 </div>
-                <p className="text-sm text-muted-foreground truncate">
-                  {run.inputPreview}
-                </p>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-medium truncate">{run.promptTitle}</p>
+                    <StatusIcon status={run.status} />
+                  </div>
+                  <p className="text-sm text-muted-foreground truncate">
+                    {run.userPrompt.slice(0, 80)}...
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6 shrink-0 pl-4">
+                <div className="text-right hidden sm:block">
+                  <p className="font-semibold">
+                    {run.overallScore !== null ? `${run.overallScore}/5` : "—"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Score</p>
+                </div>
+                <div className="text-right hidden md:block">
+                  <p className="text-sm text-muted-foreground flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {formatDistanceToNow(new Date(run.createdAt), { addSuffix: true })}
+                  </p>
+                </div>
+                <StatusBadge status={run.status} />
               </div>
             </div>
-            <div className="flex items-center gap-6 shrink-0 pl-4">
-              <div className="text-right hidden sm:block">
-                <p className="font-semibold">{run.score}/5</p>
-                <p className="text-xs text-muted-foreground">Score</p>
-              </div>
-              <div className="text-right hidden md:block">
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {run.createdAt}
-                </p>
-              </div>
-              <StatusBadge status={run.status} />
-              <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-            </div>
-          </Link>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Empty State */}
-      {testRuns.length === 0 && (
+      {!isLoading && testRuns.length === 0 && (
         <div className="text-center py-16 px-4">
           <div className="inline-flex h-16 w-16 rounded-full bg-muted items-center justify-center mb-4">
             <FlaskConical className="h-8 w-8 text-muted-foreground" />
@@ -173,11 +154,19 @@ export default function TestRunsPage() {
           <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
             Run tests on your prompts to evaluate their performance and track improvements.
           </p>
-          <Button asChild>
-            <Link to="/app/library">Go to Library</Link>
+          <Button onClick={() => setDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Create First Test
           </Button>
         </div>
       )}
+
+      {/* New Test Dialog */}
+      <NewTestRunDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onComplete={refetch}
+      />
     </div>
   );
 }

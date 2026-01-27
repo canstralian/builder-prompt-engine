@@ -163,6 +163,74 @@ export type Database = {
         }
         Relationships: []
       }
+      test_runs: {
+        Row: {
+          created_at: string
+          draft_id: string | null
+          id: string
+          input_variables: Json | null
+          notes: string | null
+          outputs: Json
+          overall_score: number | null
+          prompt_title: string
+          rating_clarity: number | null
+          rating_completeness: number | null
+          rating_correctness: number | null
+          rating_style_match: number | null
+          status: string | null
+          system_prompt: string | null
+          updated_at: string
+          user_id: string
+          user_prompt: string
+        }
+        Insert: {
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          input_variables?: Json | null
+          notes?: string | null
+          outputs?: Json
+          overall_score?: number | null
+          prompt_title: string
+          rating_clarity?: number | null
+          rating_completeness?: number | null
+          rating_correctness?: number | null
+          rating_style_match?: number | null
+          status?: string | null
+          system_prompt?: string | null
+          updated_at?: string
+          user_id: string
+          user_prompt: string
+        }
+        Update: {
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          input_variables?: Json | null
+          notes?: string | null
+          outputs?: Json
+          overall_score?: number | null
+          prompt_title?: string
+          rating_clarity?: number | null
+          rating_completeness?: number | null
+          rating_correctness?: number | null
+          rating_style_match?: number | null
+          status?: string | null
+          system_prompt?: string | null
+          updated_at?: string
+          user_id?: string
+          user_prompt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_runs_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
