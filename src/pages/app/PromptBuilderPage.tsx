@@ -68,7 +68,7 @@ export default function PromptBuilderPage() {
     variables: [] as { name: string; type: string; required: boolean }[],
   });
 
-  const updateFormData = (field: string, value: any) => {
+  const updateFormData = (field: string, value: string | { name: string; type: string; required: boolean }[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
