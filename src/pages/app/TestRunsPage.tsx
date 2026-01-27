@@ -1,21 +1,30 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   FlaskConical,
   Clock,
   CheckCircle,
   XCircle,
   AlertCircle,
-  ArrowRight,
-  Filter,
   Plus,
   Loader2,
+  ArrowUpDown,
 } from "lucide-react";
 import { useTestRuns } from "@/hooks/useTestRuns";
 import { NewTestRunDialog } from "@/components/test-runs/NewTestRunDialog";
 import { formatDistanceToNow } from "date-fns";
+
+type StatusFilter = "all" | "passed" | "failed" | "warning" | "pending";
+type SortOption = "date-desc" | "date-asc" | "score-desc" | "score-asc";
 
 const StatusIcon = ({ status }: { status: string }) => {
   switch (status) {
@@ -50,7 +59,36 @@ const StatusBadge = ({ status }: { status: string }) => {
 export default function TestRunsPage() {
   const { testRuns, isLoading, stats, refetch } = useTestRuns();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [sortOption, setSortOption] = useState<SortOption>("date-desc");
   const navigate = useNavigate();
+
+  const filteredAndSortedRuns = useMemo(() => {
+    let result = [...testRuns];
+
+    // Filter by status
+    if (statusFilter !== "all") {
+      result = result.filter((run) => run.status === statusFilter);
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      switch (sortOption) {
+        case "date-desc":
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        case "date-asc":
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case "score-desc":
+          return (b.overallScore ?? -1) - (a.overallScore ?? -1);
+        case "score-asc":
+          return (a.overallScore ?? 6) - (b.overallScore ?? 6);
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [testRuns, statusFilter, sortOption]);
 
   return (
     <div className="space-y-6">
@@ -62,16 +100,45 @@ export default function TestRunsPage() {
             Test your prompts and evaluate their quality
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Filter className="mr-2 h-4 w-4" />
-            Filter
+        <Button onClick={() => setDialogOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          New Test
+        </Button>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3">
+        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="passed">Passed</SelectItem>
+            <SelectItem value="failed">Failed</SelectItem>
+            <SelectItem value="warning">Warning</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={sortOption} onValueChange={(v) => setSortOption(v as SortOption)}>
+          <SelectTrigger className="w-[160px]">
+            <ArrowUpDown className="mr-2 h-4 w-4" />
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date-desc">Newest First</SelectItem>
+            <SelectItem value="date-asc">Oldest First</SelectItem>
+            <SelectItem value="score-desc">Highest Score</SelectItem>
+            <SelectItem value="score-asc">Lowest Score</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {statusFilter !== "all" && (
+          <Button variant="ghost" size="sm" onClick={() => setStatusFilter("all")}>
+            Clear filter
           </Button>
-          <Button onClick={() => setDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            New Test
-          </Button>
-        </div>
+        )}
       </div>
 
       {/* Stats */}
@@ -104,9 +171,9 @@ export default function TestRunsPage() {
       )}
 
       {/* Test Runs List */}
-      {!isLoading && testRuns.length > 0 && (
+      {!isLoading && filteredAndSortedRuns.length > 0 && (
         <div className="space-y-3">
-          {testRuns.map((run) => (
+          {filteredAndSortedRuns.map((run) => (
             <div
               key={run.id}
               onClick={() => navigate(`/app/tests/${run.id}`)}
@@ -146,7 +213,7 @@ export default function TestRunsPage() {
         </div>
       )}
 
-      {/* Empty State */}
+      {/* Empty State - No runs at all */}
       {!isLoading && testRuns.length === 0 && (
         <div className="text-center py-16 px-4">
           <div className="inline-flex h-16 w-16 rounded-full bg-muted items-center justify-center mb-4">
@@ -159,6 +226,18 @@ export default function TestRunsPage() {
           <Button onClick={() => setDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Create First Test
+          </Button>
+        </div>
+      )}
+
+      {/* Empty State - Filtered results */}
+      {!isLoading && testRuns.length > 0 && filteredAndSortedRuns.length === 0 && (
+        <div className="text-center py-12 px-4">
+          <p className="text-muted-foreground">
+            No test runs match the current filter.
+          </p>
+          <Button variant="link" onClick={() => setStatusFilter("all")} className="mt-2">
+            Clear filter
           </Button>
         </div>
       )}
