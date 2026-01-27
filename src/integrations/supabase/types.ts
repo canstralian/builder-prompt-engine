@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      drafts: {
+        Row: {
+          compiled_prompt: string | null
+          context: string | null
+          created_at: string
+          expires_at: string | null
+          goal: string
+          id: string
+          meta_json: Json | null
+          output_format: Database["public"]["Enums"]["draft_output_format"]
+          owner_session_id: string | null
+          owner_user_id: string | null
+          sections_json: Json | null
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          compiled_prompt?: string | null
+          context?: string | null
+          created_at?: string
+          expires_at?: string | null
+          goal: string
+          id?: string
+          meta_json?: Json | null
+          output_format: Database["public"]["Enums"]["draft_output_format"]
+          owner_session_id?: string | null
+          owner_user_id?: string | null
+          sections_json?: Json | null
+          source: string
+          updated_at?: string
+        }
+        Update: {
+          compiled_prompt?: string | null
+          context?: string | null
+          created_at?: string
+          expires_at?: string | null
+          goal?: string
+          id?: string
+          meta_json?: Json | null
+          output_format?: Database["public"]["Enums"]["draft_output_format"]
+          owner_session_id?: string | null
+          owner_user_id?: string | null
+          sections_json?: Json | null
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       learn_categories: {
         Row: {
           created_at: string
@@ -152,6 +200,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      draft_output_format: "bullets" | "table" | "json" | "email"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -280,6 +329,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      draft_output_format: ["bullets", "table", "json", "email"],
     },
   },
 } as const
