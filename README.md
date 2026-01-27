@@ -216,7 +216,7 @@ Contributions are welcome! Please follow these guidelines:
 
 ## License
 
-This project is open source. See the repository for license details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
