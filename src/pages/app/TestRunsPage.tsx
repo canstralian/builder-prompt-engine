@@ -18,6 +18,7 @@ import {
   Plus,
   Loader2,
   ArrowUpDown,
+  Download,
 } from "lucide-react";
 import { useTestRuns } from "@/hooks/useTestRuns";
 import { NewTestRunDialog } from "@/components/test-runs/NewTestRunDialog";
@@ -90,6 +91,56 @@ export default function TestRunsPage() {
     return result;
   }, [testRuns, statusFilter, sortOption]);
 
+  const exportToCSV = () => {
+    const headers = [
+      "Title",
+      "Status",
+      "Overall Score",
+      "Clarity",
+      "Completeness",
+      "Correctness",
+      "Style Match",
+      "User Prompt",
+      "System Prompt",
+      "Notes",
+      "Created At",
+    ];
+
+    const escapeCSV = (value: string | null | undefined) => {
+      if (value == null) return "";
+      const str = String(value);
+      if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const rows = filteredAndSortedRuns.map((run) => [
+      escapeCSV(run.promptTitle),
+      escapeCSV(run.status),
+      run.overallScore ?? "",
+      run.ratingClarity ?? "",
+      run.ratingCompleteness ?? "",
+      run.ratingCorrectness ?? "",
+      run.ratingStyleMatch ?? "",
+      escapeCSV(run.userPrompt),
+      escapeCSV(run.systemPrompt),
+      escapeCSV(run.notes),
+      new Date(run.createdAt).toISOString(),
+    ]);
+
+    const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `test-runs-${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -100,10 +151,18 @@ export default function TestRunsPage() {
             Test your prompts and evaluate their quality
           </p>
         </div>
-        <Button onClick={() => setDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Test
-        </Button>
+        <div className="flex gap-2">
+          {testRuns.length > 0 && (
+            <Button variant="outline" onClick={exportToCSV}>
+              <Download className="mr-2 h-4 w-4" />
+              Export CSV
+            </Button>
+          )}
+          <Button onClick={() => setDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Test
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
