@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/ui/empty-state";
+import { StatCard } from "@/components/ui/stat-card";
 import {
   FadeIn,
   StaggerContainer,
@@ -27,6 +28,9 @@ import {
   Loader2,
   ArrowUpDown,
   Download,
+  BarChart3,
+  TrendingUp,
+  Calendar,
 } from "lucide-react";
 import { useTestRuns } from "@/hooks/useTestRuns";
 import { NewTestRunDialog } from "@/components/test-runs/NewTestRunDialog";
@@ -211,30 +215,36 @@ export default function TestRunsPage() {
       {/* Stats */}
       <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4" staggerDelay={0.05}>
         <StaggerItem>
-          <div className="p-4 border border-border bg-card shadow-xs">
-            <p className="text-2xl font-bold">{stats.total}</p>
-            <p className="text-sm text-muted-foreground">Total runs</p>
-          </div>
+          <StatCard
+            value={stats.total}
+            label="Total runs"
+            icon={FlaskConical}
+            variant="default"
+          />
         </StaggerItem>
         <StaggerItem>
-          <div className="p-4 border border-border bg-card shadow-xs">
-            <p className="text-2xl font-bold text-success">
-              {stats.total > 0 ? `${stats.passRate}%` : "—"}
-            </p>
-            <p className="text-sm text-muted-foreground">Pass rate</p>
-          </div>
+          <StatCard
+            value={stats.total > 0 ? `${stats.passRate}%` : "—"}
+            label="Pass rate"
+            icon={CheckCircle}
+            variant="success"
+          />
         </StaggerItem>
         <StaggerItem>
-          <div className="p-4 border border-border bg-card shadow-xs">
-            <p className="text-2xl font-bold">{stats.avgScore}</p>
-            <p className="text-sm text-muted-foreground">Avg. score</p>
-          </div>
+          <StatCard
+            value={stats.avgScore}
+            label="Avg. score"
+            icon={BarChart3}
+            variant="primary"
+          />
         </StaggerItem>
         <StaggerItem>
-          <div className="p-4 border border-border bg-card shadow-xs">
-            <p className="text-2xl font-bold">{stats.thisWeek}</p>
-            <p className="text-sm text-muted-foreground">This week</p>
-          </div>
+          <StatCard
+            value={stats.thisWeek}
+            label="This week"
+            icon={Calendar}
+            variant="accent"
+          />
         </StaggerItem>
       </StaggerContainer>
 

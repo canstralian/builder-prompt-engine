@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { StatCard } from "@/components/ui/stat-card";
 import {
   FadeIn,
   StaggerContainer,
@@ -61,20 +62,13 @@ export default function DashboardPage() {
       <StaggerContainer className="grid md:grid-cols-3 gap-4">
         {quickStats.map((stat) => (
           <StaggerItem key={stat.label}>
-            <MotionCard className="p-6 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 bg-accent/10 flex items-center justify-center border border-accent/20">
-                  <stat.icon className="h-6 w-6 text-accent" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              </div>
-              <p className="mt-4 text-xs text-muted-foreground">
-                {stat.trend}
-              </p>
-            </MotionCard>
+            <StatCard
+              value={stat.value}
+              label={stat.label}
+              icon={stat.icon}
+              trend={stat.trend}
+              variant="accent"
+            />
           </StaggerItem>
         ))}
       </StaggerContainer>
