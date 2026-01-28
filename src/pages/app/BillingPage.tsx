@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import {
   CreditCard,
   Check,
@@ -130,193 +131,202 @@ export default function BillingPage() {
       />
 
       {/* Current Plan */}
-      <div className="p-6 border border-border bg-card shadow-sm">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <h2 className="text-lg font-semibold">Current Plan</h2>
-              <Badge variant="secondary">
-                {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : currentPlanName}
-              </Badge>
+      <FadeIn delay={0.1}>
+        <div className="p-6 border border-border bg-card shadow-sm">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <h2 className="text-lg font-semibold">Current Plan</h2>
+                <Badge variant="secondary">
+                  {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : currentPlanName}
+                </Badge>
+              </div>
+              <p className="text-muted-foreground text-sm">
+                {subscribed
+                  ? `Your subscription renews on ${new Date(subscriptionEnd!).toLocaleDateString()}.`
+                  : `You're on the Free plan. Upgrade to unlock more features.`}
+              </p>
             </div>
-            <p className="text-muted-foreground text-sm">
-              {subscribed
-                ? `Your subscription renews on ${new Date(subscriptionEnd!).toLocaleDateString()}.`
-                : `You're on the Free plan. Upgrade to unlock more features.`}
-            </p>
+            <div className="text-right">
+              <p className="text-3xl font-bold">{currentPlanPrice}</p>
+              <p className="text-sm text-muted-foreground">{currentPlanPeriod}</p>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-3xl font-bold">{currentPlanPrice}</p>
-            <p className="text-sm text-muted-foreground">{currentPlanPeriod}</p>
-          </div>
+          {subscribed && (
+            <div className="mt-4 pt-4 border-t border-border">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleManageSubscription}
+                disabled={loadingPortal}
+              >
+                {loadingPortal ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                )}
+                Manage Subscription
+              </Button>
+            </div>
+          )}
         </div>
-        {subscribed && (
-          <div className="mt-4 pt-4 border-t border-border">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleManageSubscription}
-              disabled={loadingPortal}
-            >
-              {loadingPortal ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <ExternalLink className="mr-2 h-4 w-4" />
-              )}
-              Manage Subscription
-            </Button>
-          </div>
-        )}
-      </div>
+      </FadeIn>
 
       {/* Plans Comparison */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <StaggerContainer className="grid md:grid-cols-3 gap-4">
         {plans.map((plan) => {
           const isCurrent = isPlanCurrent(plan.key);
           const isUpgrade = plan.priceId && !isCurrent;
           const isLoadingPlan = loadingPlan === plan.name;
 
           return (
-            <div
-              key={plan.name}
-              className={cn(
-                "p-6 border bg-card",
-                plan.popular && "border-primary ring-1 ring-primary shadow-md",
-                isCurrent && !plan.popular && "ring-2 ring-accent"
-              )}
-            >
-              {plan.popular && (
-                <Badge variant="premium" className="mb-3">Most Popular</Badge>
-              )}
-              {isCurrent && !plan.popular && (
-                <Badge variant="secondary" className="mb-3">Your Plan</Badge>
-              )}
-              <h3 className="text-lg font-semibold">{plan.name}</h3>
-              <div className="my-3">
-                <span className="text-3xl font-bold">{plan.price}</span>
-                <span className="text-muted-foreground">{plan.period}</span>
+            <StaggerItem key={plan.name}>
+              <div
+                className={cn(
+                  "p-6 border bg-card h-full",
+                  plan.popular && "border-primary ring-1 ring-primary shadow-md",
+                  isCurrent && !plan.popular && "ring-2 ring-accent"
+                )}
+              >
+                {plan.popular && (
+                  <Badge variant="premium" className="mb-3">Most Popular</Badge>
+                )}
+                {isCurrent && !plan.popular && (
+                  <Badge variant="secondary" className="mb-3">Your Plan</Badge>
+                )}
+                <h3 className="text-lg font-semibold">{plan.name}</h3>
+                <div className="my-3">
+                  <span className="text-3xl font-bold">{plan.price}</span>
+                  <span className="text-muted-foreground">{plan.period}</span>
+                </div>
+                <ul className="space-y-2 mb-6">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-success" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                {isCurrent ? (
+                  <Button variant="outline" className="w-full" disabled>
+                    Current plan
+                  </Button>
+                ) : isUpgrade ? (
+                  <Button
+                    variant={plan.popular ? "default" : "outline"}
+                    className="w-full"
+                    onClick={() => handleUpgrade(plan.priceId!, plan.name)}
+                    disabled={isLoadingPlan}
+                  >
+                    {isLoadingPlan ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <>
+                        Upgrade
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <Button variant="outline" className="w-full" disabled>
+                    —
+                  </Button>
+                )}
               </div>
-              <ul className="space-y-2 mb-6">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2 text-sm">
-                    <Check className="h-4 w-4 text-success" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              {isCurrent ? (
-                <Button variant="outline" className="w-full" disabled>
-                  Current plan
-                </Button>
-              ) : isUpgrade ? (
-                <Button
-                  variant={plan.popular ? "default" : "outline"}
-                  className="w-full"
-                  onClick={() => handleUpgrade(plan.priceId!, plan.name)}
-                  disabled={isLoadingPlan}
-                >
-                  {isLoadingPlan ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <>
-                      Upgrade
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
-              ) : (
-                <Button variant="outline" className="w-full" disabled>
-                  —
-                </Button>
-              )}
-            </div>
+            </StaggerItem>
           );
         })}
-      </div>
+      </StaggerContainer>
 
       {/* Usage */}
-      <div className="p-6 border border-border bg-card space-y-4 shadow-sm">
-        <h2 className="text-lg font-semibold">Usage This Month</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="p-4 bg-secondary/50">
-            <div className="flex justify-between mb-2">
-              <span className="text-sm text-muted-foreground">Prompts</span>
-              <span className="text-sm font-medium">24 / 25</span>
+      <FadeIn delay={0.2}>
+        <div className="p-6 border border-border bg-card space-y-4 shadow-sm">
+          <h2 className="text-lg font-semibold">Usage This Month</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="p-4 bg-secondary/50">
+              <div className="flex justify-between mb-2">
+                <span className="text-sm text-muted-foreground">Prompts</span>
+                <span className="text-sm font-medium">24 / 25</span>
+              </div>
+              <div className="h-2 bg-muted overflow-hidden">
+                <div className="h-full w-[96%] bg-primary" />
+              </div>
             </div>
-            <div className="h-2 bg-muted overflow-hidden">
-              <div className="h-full w-[96%] bg-primary" />
+            <div className="p-4 bg-secondary/50">
+              <div className="flex justify-between mb-2">
+                <span className="text-sm text-muted-foreground">Test Runs</span>
+                <span className="text-sm font-medium">3 / 5</span>
+              </div>
+              <div className="h-2 bg-muted overflow-hidden">
+                <div className="h-full w-[60%] bg-accent" />
+              </div>
             </div>
           </div>
-          <div className="p-4 bg-secondary/50">
-            <div className="flex justify-between mb-2">
-              <span className="text-sm text-muted-foreground">Test Runs</span>
-              <span className="text-sm font-medium">3 / 5</span>
-            </div>
-            <div className="h-2 bg-muted overflow-hidden">
-              <div className="h-full w-[60%] bg-accent" />
-            </div>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            Usage resets on the 1st of each month.
+          </p>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Usage resets on the 1st of each month.
-        </p>
-      </div>
+      </FadeIn>
 
       {/* Payment Method */}
-      <div className="p-6 border border-border bg-card space-y-4 shadow-sm">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Payment Method</h2>
-          {subscribed ? (
-            <Button variant="outline" size="sm" onClick={handleManageSubscription}>
-              <CreditCard className="mr-2 h-4 w-4" />
-              Update Card
-            </Button>
-          ) : (
-            <Button variant="outline" size="sm" disabled>
-              <CreditCard className="mr-2 h-4 w-4" />
-              Add Card
-            </Button>
-          )}
+      <FadeIn delay={0.25}>
+        <div className="p-6 border border-border bg-card space-y-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Payment Method</h2>
+            {subscribed ? (
+              <Button variant="outline" size="sm" onClick={handleManageSubscription}>
+                <CreditCard className="mr-2 h-4 w-4" />
+                Update Card
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" disabled>
+                <CreditCard className="mr-2 h-4 w-4" />
+                Add Card
+              </Button>
+            )}
+          </div>
+          <p className="text-muted-foreground text-sm">
+            {subscribed
+              ? "Manage your payment method via the Customer Portal."
+              : "No payment method on file. Add one to upgrade your plan."}
+          </p>
         </div>
-        <p className="text-muted-foreground text-sm">
-          {subscribed
-            ? "Manage your payment method via the Customer Portal."
-            : "No payment method on file. Add one to upgrade your plan."}
-        </p>
-      </div>
+      </FadeIn>
 
       {/* Invoices */}
-      <div className="p-6 border border-border bg-card space-y-4 shadow-sm">
-        <h2 className="text-lg font-semibold">Billing History</h2>
-        {invoices.length > 0 ? (
-          <div className="space-y-2">
-            {invoices.map((invoice) => (
-              <div
-                key={invoice.id}
-                className="flex items-center justify-between p-3 hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Receipt className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium text-sm">{invoice.date}</p>
-                    <p className="text-xs text-muted-foreground">{invoice.amount}</p>
+      <FadeIn delay={0.3}>
+        <div className="p-6 border border-border bg-card space-y-4 shadow-sm">
+          <h2 className="text-lg font-semibold">Billing History</h2>
+          {invoices.length > 0 ? (
+            <div className="space-y-2">
+              {invoices.map((invoice) => (
+                <div
+                  key={invoice.id}
+                  className="flex items-center justify-between p-3 hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Receipt className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium text-sm">{invoice.date}</p>
+                      <p className="text-xs text-muted-foreground">{invoice.amount}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="success" className="capitalize">
+                      {invoice.status}
+                    </Badge>
+                    <Button variant="ghost" size="icon">
+                      <Download className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Badge variant="success" className="capitalize">
-                    {invoice.status}
-                  </Badge>
-                  <Button variant="ghost" size="icon">
-                    <Download className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-muted-foreground text-sm">No invoices yet.</p>
-        )}
-      </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground text-sm">No invoices yet.</p>
+          )}
+        </div>
+      </FadeIn>
     </div>
   );
 }

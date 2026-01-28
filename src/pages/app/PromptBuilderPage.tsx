@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { FadeIn } from "@/components/ui/motion";
 import {
   Select,
   SelectContent,
@@ -103,66 +104,71 @@ export default function PromptBuilderPage() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <Button variant="ghost" size="sm" asChild className="mb-4">
-          <Link to="/app/library">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Library
-          </Link>
-        </Button>
-        <div className="flex items-center gap-3">
-          <div className="h-12 w-12 bg-primary/10 flex items-center justify-center">
-            <Sparkles className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">Prompt Builder</h1>
-            <p className="text-muted-foreground">
-              Create a high-quality prompt step by step
-            </p>
+      <FadeIn>
+        <div className="mb-8">
+          <Button variant="ghost" size="sm" asChild className="mb-4">
+            <Link to="/app/library">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Library
+            </Link>
+          </Button>
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 bg-primary/10 flex items-center justify-center">
+              <Sparkles className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Prompt Builder</h1>
+              <p className="text-muted-foreground">
+                Create a high-quality prompt step by step
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Progress Steps */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          {steps.map((step, index) => (
-            <div key={step.id} className="flex items-center">
-              <button
-                onClick={() => setCurrentStep(step.id)}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 transition-all",
-                  currentStep === step.id
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : currentStep > step.id
-                    ? "bg-success/10 text-success"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                )}
-              >
-                {currentStep > step.id ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <step.icon className="h-4 w-4" />
-                )}
-                <span className="hidden sm:inline text-sm font-medium">
-                  {step.title}
-                </span>
-              </button>
-              {index < steps.length - 1 && (
-                <div
+      <FadeIn delay={0.1}>
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            {steps.map((step, index) => (
+              <div key={step.id} className="flex items-center">
+                <button
+                  onClick={() => setCurrentStep(step.id)}
                   className={cn(
-                    "h-0.5 w-8 mx-2 hidden sm:block",
-                    currentStep > step.id ? "bg-success" : "bg-muted"
+                    "flex items-center gap-2 px-3 py-2 transition-all",
+                    currentStep === step.id
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : currentStep > step.id
+                      ? "bg-success/10 text-success"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
                   )}
-                />
-              )}
-            </div>
-          ))}
+                >
+                  {currentStep > step.id ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <step.icon className="h-4 w-4" />
+                  )}
+                  <span className="hidden sm:inline text-sm font-medium">
+                    {step.title}
+                  </span>
+                </button>
+                {index < steps.length - 1 && (
+                  <div
+                    className={cn(
+                      "h-0.5 w-8 mx-2 hidden sm:block",
+                      currentStep > step.id ? "bg-success" : "bg-muted"
+                    )}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Form Content */}
-      <div className="p-8 border border-border bg-card shadow-sm">
+      <FadeIn delay={0.15}>
+        <div className="p-8 border border-border bg-card shadow-sm">
         {/* Step 1: Goal */}
         {currentStep === 1 && (
           <div className="space-y-6">
@@ -461,7 +467,8 @@ export default function PromptBuilderPage() {
             </Button>
           )}
         </div>
-      </div>
+        </div>
+      </FadeIn>
     </div>
   );
 }
