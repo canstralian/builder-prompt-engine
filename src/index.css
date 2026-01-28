@@ -1,44 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* PromptCrafting Design System
-   Modern, calm, "craft + engineering" aesthetic
-   High-contrast, generous whitespace, premium feel
+   "Digital Precision" - Violet & Teal with Sharp Corners and Hard Shadows
+   Modern, creative, premium feel with technical precision
 */
 
 @layer base {
   :root {
-    /* Architectural Blueprint Theme - Engineering & Precision */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    /* Digital Precision Theme - Violet & Teal */
+    --background: 240 10% 98%;
+    --foreground: 240 50% 14%;
 
     /* Surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 240 50% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 240 50% 14%;
 
-    /* Primary - Steel Blue */
-    --primary: 0 0% 0%;
+    /* Primary - Vibrant Violet */
+    --primary: 263 70% 58%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Cool gray */
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 0%;
+    /* Secondary - Light Violet-Gray */
+    --secondary: 263 30% 96%;
+    --secondary-foreground: 263 50% 30%;
 
     /* Muted */
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 240 20% 96%;
+    --muted-foreground: 240 10% 45%;
 
-    /* Accent - Technical Orange */
-    --accent: 0 0% 90%;
-    --accent-foreground: 0 0% 0%;
+    /* Accent - Bright Teal */
+    --accent: 168 76% 40%;
+    --accent-foreground: 0 0% 100%;
 
     /* Semantic */
     --destructive: 0 84% 60%;
@@ -46,104 +46,125 @@
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
 
-    /* Borders & inputs */
-    --border: 0 0% 0%;
-    --input: 0 0% 0%;
-    --ring: 0 0% 0%;
+    /* Borders & inputs - Hard contrast */
+    --border: 240 50% 14%;
+    --input: 240 50% 14%;
+    --ring: 263 70% 58%;
 
-    /* Radius - Precise, architectural */
+    /* Radius - Sharp precision */
     --radius: 0rem;
 
     /* Sidebar */
-    --sidebar-background: 210 20% 98%;
-    --sidebar-foreground: 0 0% 0%;
-    --sidebar-primary: 0 0% 0%;
+    --sidebar-background: 263 30% 98%;
+    --sidebar-foreground: 240 50% 14%;
+    --sidebar-primary: 263 70% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 90%;
-    --sidebar-accent-foreground: 0 0% 0%;
-    --sidebar-border: 0 0% 0%;
-    --sidebar-ring: 0 0% 0%;
+    --sidebar-accent: 263 30% 94%;
+    --sidebar-accent-foreground: 240 50% 14%;
+    --sidebar-border: 240 50% 14%;
+    --sidebar-ring: 263 70% 58%;
 
     /* Custom tokens */
-    --gradient-hero: linear-gradient(135deg, hsl(220 40% 20%) 0%, hsl(215 30% 30%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(25 90% 55%) 0%, hsl(20 85% 50%) 100%);
-    --gradient-surface: linear-gradient(180deg, hsl(210 20% 100%) 0%, hsl(210 20% 96%) 100%);
-    --shadow-sm: 3px 3px 0px 0px #000000;
-    --shadow-md: 8px 8px 0px 0px #000000;
-    --shadow-lg: 12px 12px 0px 0px #000000;
-    --shadow-xl: 16px 16px 0px 0px #000000;
-    --shadow-glow: 0 0 0 2px hsl(25 90% 55% / 0.2);
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --sidebar: 0 0% 98%;
+    --gradient-hero: linear-gradient(135deg, hsl(263 70% 58%) 0%, hsl(240 50% 25%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(168 76% 40%) 0%, hsl(168 70% 35%) 100%);
+    --gradient-surface: linear-gradient(180deg, hsl(240 10% 100%) 0%, hsl(263 30% 98%) 100%);
+    
+    /* Hard offset shadows - Brutalist style with dark color */
+    --shadow-2xs: 1px 1px 0px 0px hsl(240 50% 14%);
+    --shadow-xs: 2px 2px 0px 0px hsl(240 50% 14%);
+    --shadow-sm: 3px 3px 0px 0px hsl(240 50% 14%);
+    --shadow: 4px 4px 0px 0px hsl(240 50% 14%);
+    --shadow-md: 5px 5px 0px 0px hsl(240 50% 14%);
+    --shadow-lg: 6px 6px 0px 0px hsl(240 50% 14%);
+    --shadow-xl: 8px 8px 0px 0px hsl(240 50% 14%);
+    --shadow-2xl: 10px 10px 0px 0px hsl(240 50% 14%);
+    --shadow-glow: 0 0 0 2px hsl(168 76% 40% / 0.3);
+    
+    /* Charts */
+    --chart-1: 263 70% 58%;
+    --chart-2: 168 76% 40%;
+    --chart-3: 240 50% 35%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 200 70% 50%;
+    
+    --sidebar: 263 30% 98%;
     --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-serif: 'Lora', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
     --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    --shadow-2xs: 1px 1px 0px 0px #000000;
-    --shadow-xs: 2px 2px 0px 0px #000000;
-    --shadow: 5px 5px 0px 0px #000000;
-    --shadow-2xl: 24px 24px 0px 0px #000000;
     --tracking-normal: 0em;
     --spacing: 0.25rem;
   }
 
   .dark {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
+    /* Dark Mode - Deep Space */
+    --background: 240 50% 6%;
+    --foreground: 210 40% 98%;
 
-    --card: 233 97% 37%;
-    --card-foreground: 0 97% 97%;
-    --popover: 0 0% 0%;
-    --popover-foreground: 0 0% 100%;
+    --card: 240 40% 10%;
+    --card-foreground: 210 40% 98%;
+    --popover: 240 40% 10%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 284 93% 64%;
-    --primary-foreground: 0 0% 0%;
+    /* Primary - Soft Violet for dark */
+    --primary: 263 70% 72%;
+    --primary-foreground: 240 50% 6%;
 
-    --secondary: 260 59% 60%;
-    --secondary-foreground: 0 5% 39%;
+    /* Secondary */
+    --secondary: 263 30% 20%;
+    --secondary-foreground: 263 30% 90%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    /* Muted */
+    --muted: 240 30% 15%;
+    --muted-foreground: 240 10% 65%;
 
-    --accent: 0 0% 15%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Brighter Teal */
+    --accent: 168 76% 50%;
+    --accent-foreground: 240 50% 6%;
 
-    --destructive: 0 62% 30%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 70% 40%;
+    --success: 142 70% 45%;
     --success-foreground: 0 0% 100%;
 
-    --border: 0 0% 100%;
-    --input: 0 0% 100%;
-    --ring: 0 0% 100%;
+    /* White borders for dark mode */
+    --border: 210 40% 98%;
+    --input: 210 40% 98%;
+    --ring: 263 70% 72%;
 
-    --sidebar-background: 220 40% 8%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 100%;
-    --sidebar-ring: 0 0% 100%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar: 0 0% 5%;
+    /* Sidebar dark */
+    --sidebar-background: 240 50% 8%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 263 70% 72%;
+    --sidebar-primary-foreground: 240 50% 6%;
+    --sidebar-accent: 240 30% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 210 40% 98%;
+    --sidebar-ring: 263 70% 72%;
+
+    /* Dark mode gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(240 50% 10%) 0%, hsl(263 40% 20%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(168 76% 50%) 0%, hsl(168 70% 40%) 100%);
+    --gradient-surface: linear-gradient(180deg, hsl(240 50% 8%) 0%, hsl(240 40% 10%) 100%);
+
+    /* Hard offset shadows - White for dark mode */
+    --shadow-2xs: 1px 1px 0px 0px hsl(210 40% 98%);
+    --shadow-xs: 2px 2px 0px 0px hsl(210 40% 98%);
+    --shadow-sm: 3px 3px 0px 0px hsl(210 40% 98%);
+    --shadow: 4px 4px 0px 0px hsl(210 40% 98%);
+    --shadow-md: 5px 5px 0px 0px hsl(210 40% 98%);
+    --shadow-lg: 6px 6px 0px 0px hsl(210 40% 98%);
+    --shadow-xl: 8px 8px 0px 0px hsl(210 40% 98%);
+    --shadow-2xl: 10px 10px 0px 0px hsl(210 40% 98%);
+    --shadow-glow: 0 0 0 2px hsl(168 76% 50% / 0.4);
+    
+    --chart-1: 263 70% 72%;
+    --chart-2: 168 76% 50%;
+    --chart-3: 200 60% 50%;
+    --chart-4: 280 65% 65%;
+    --chart-5: 340 75% 60%;
+    --sidebar: 240 50% 8%;
     --radius: 0rem;
-    --shadow-2xs: 1px 1px 0px 0px #ffffff;
-    --shadow-xs: 2px 2px 0px 0px #ffffff;
-    --shadow-sm: 3px 3px 0px 0px #ffffff;
-    --shadow: 5px 5px 0px 0px #ffffff;
-    --shadow-md: 8px 8px 0px 0px #ffffff;
-    --shadow-lg: 12px 12px 0px 0px #ffffff;
-    --shadow-xl: 16px 16px 0px 0px #ffffff;
-    --shadow-2xl: 24px 24px 0px 0px #ffffff;
   }
 }
 
@@ -189,7 +210,7 @@
 
   /* Premium card */
   .card-elevated {
-    @apply bg-card rounded-xl border shadow-md hover:shadow-lg transition-shadow duration-200;
+    @apply bg-card border shadow-md hover:shadow-lg transition-shadow duration-200;
   }
 
   /* Glass effect */
@@ -197,12 +218,13 @@
     @apply bg-background/80 backdrop-blur-sm border border-border/50;
   }
 
-  /* Text gradient */
+  /* Text gradient - Violet */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70;
+    @apply bg-clip-text text-transparent;
+    background: linear-gradient(135deg, hsl(263 70% 58%) 0%, hsl(263 50% 40%) 100%);
   }
 
-  /* Accent text */
+  /* Accent text gradient - Teal */
   .text-accent-gradient {
     @apply bg-clip-text text-transparent;
     background: var(--gradient-accent);
@@ -212,9 +234,9 @@
   .prose-brand {
     @apply prose prose-slate max-w-none;
     @apply prose-headings:font-semibold prose-headings:tracking-tight;
-    @apply prose-a:text-accent prose-a:no-underline hover:prose-a:underline;
-    @apply prose-code:bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal;
-    @apply prose-pre:bg-primary prose-pre:text-primary-foreground;
+    @apply prose-a:text-primary prose-a:no-underline hover:prose-a:underline;
+    @apply prose-code:bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:font-normal;
+    @apply prose-pre:bg-foreground prose-pre:text-background;
   }
 
   /* Smooth scroll sections */

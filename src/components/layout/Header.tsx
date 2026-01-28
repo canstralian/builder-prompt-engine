@@ -25,7 +25,7 @@ export function Header() {
               <Link
                 key={link.href}
                 to={link.href}
-                className="px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-muted/50 rounded-sm"
+                className="px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-muted/50"
               >
                 {link.label}
               </Link>
@@ -38,7 +38,7 @@ export function Header() {
           <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
             <Link to="/auth">Log in</Link>
           </Button>
-          <Button size="sm" asChild className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm">
+          <Button variant="accent" size="sm" asChild className="shadow-sm">
             <Link to="/auth?mode=signup">Start crafting</Link>
           </Button>
         </div>
@@ -65,7 +65,7 @@ export function Header() {
             <Link
               key={link.href}
               to={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-muted/50 py-2.5 px-3 rounded-sm"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-muted/50 py-2.5 px-3"
               onClick={() => setMobileMenuOpen(false)}
             >
               {link.label}
@@ -79,7 +79,7 @@ export function Header() {
             <Button variant="ghost" asChild className="justify-start text-muted-foreground">
               <Link to="/auth">Log in</Link>
             </Button>
-            <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Button variant="accent" asChild>
               <Link to="/auth?mode=signup">Start crafting</Link>
             </Button>
           </div>

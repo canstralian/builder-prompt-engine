@@ -98,13 +98,17 @@ export default {
   		borderRadius: {
   			lg: 'calc(var(--radius) + 2px)',
   			md: 'var(--radius)',
-  			sm: 'calc(var(--radius) - 1px)'
+  			sm: 'calc(var(--radius))'
   		},
   		boxShadow: {
+  			'2xs': 'var(--shadow-2xs)',
+  			xs: 'var(--shadow-xs)',
   			sm: 'var(--shadow-sm)',
+  			DEFAULT: 'var(--shadow)',
   			md: 'var(--shadow-md)',
   			lg: 'var(--shadow-lg)',
   			xl: 'var(--shadow-xl)',
+  			'2xl': 'var(--shadow-2xl)',
   			glow: 'var(--shadow-glow)'
   		},
   		keyframes: {

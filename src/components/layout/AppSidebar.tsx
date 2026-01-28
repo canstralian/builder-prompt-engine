@@ -6,7 +6,6 @@ import {
   Library,
   PenTool,
   FlaskConical,
-  Settings,
   Users,
   CreditCard,
   Shield,
@@ -44,13 +43,13 @@ export function AppSidebar() {
       <Link
         to={href}
         className={cn(
-          "flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium transition-all duration-150",
+          "flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-150",
           isActive
-            ? "bg-accent text-accent-foreground shadow-sm"
+            ? "bg-primary text-primary-foreground shadow-sm"
             : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
         )}
       >
-        <Icon className={cn("h-4 w-4 shrink-0", isActive && "text-accent-foreground")} />
+        <Icon className={cn("h-4 w-4 shrink-0", isActive && "text-primary-foreground")} />
         {!collapsed && <span>{label}</span>}
       </Link>
     );
@@ -69,7 +68,7 @@ export function AppSidebar() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 shrink-0 rounded-sm hover:bg-sidebar-accent"
+          className="h-8 w-8 shrink-0 hover:bg-sidebar-accent"
           onClick={() => setCollapsed(!collapsed)}
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -117,7 +116,7 @@ export function AppSidebar() {
         <Link
           to="/learn"
           className={cn(
-            "flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-all duration-150"
+            "flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-all duration-150"
           )}
         >
           <BookOpen className="h-4 w-4 shrink-0" />

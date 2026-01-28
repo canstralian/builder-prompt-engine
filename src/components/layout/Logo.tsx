@@ -25,11 +25,11 @@ export function Logo({ variant = "default", size = "md", showText = true }: Logo
     <Link to="/" className="flex items-center gap-2 group">
       <div
         className={cn(
-          "flex items-center justify-center rounded-sm bg-accent shadow-glow transition-transform group-hover:scale-105",
+          "flex items-center justify-center bg-primary shadow-sm transition-transform group-hover:scale-105",
           sizeClasses[size]
         )}
       >
-        <Sparkles className={cn("text-accent-foreground", size === "sm" ? "h-3.5 w-3.5" : size === "md" ? "h-4 w-4" : "h-5 w-5")} />
+        <Sparkles className={cn("text-primary-foreground", size === "sm" ? "h-3.5 w-3.5" : size === "md" ? "h-4 w-4" : "h-5 w-5")} />
       </div>
       {showText && (
         <span
