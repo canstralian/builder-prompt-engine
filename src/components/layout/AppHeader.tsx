@@ -33,27 +33,27 @@ export function AppHeader() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search prompts, collections..."
-            className="pl-9 bg-muted/50 border-0 focus-visible:ring-1"
+            className="pl-9 bg-muted/50 border-0 focus-visible:ring-1 rounded-sm"
           />
         </div>
       </div>
 
       {/* Actions */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="relative">
+        <Button variant="ghost" size="icon" className="relative rounded-sm">
           <Bell className="h-4 w-4" />
           <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-accent" />
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                <User className="h-4 w-4 text-muted-foreground" />
+            <Button variant="ghost" size="icon" className="rounded-sm">
+              <div className="h-8 w-8 rounded-sm bg-primary/10 flex items-center justify-center">
+                <User className="h-4 w-4 text-primary" />
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-56 rounded-sm">
             <DropdownMenuLabel>
               <div className="flex flex-col">
                 <span className="font-medium">{displayName}</span>
@@ -61,13 +61,13 @@ export function AppHeader() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild className="rounded-sm">
               <Link to="/app/workspace">
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild className="rounded-sm">
               <Link to="/app/billing">
                 Billing & Plans
               </Link>
@@ -75,7 +75,7 @@ export function AppHeader() {
             <DropdownMenuSeparator />
             <DropdownMenuItem 
               onClick={handleSignOut}
-              className="text-destructive focus:text-destructive cursor-pointer"
+              className="text-destructive focus:text-destructive cursor-pointer rounded-sm"
             >
               <LogOut className="mr-2 h-4 w-4" />
               Log out

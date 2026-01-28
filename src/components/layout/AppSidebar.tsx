@@ -44,13 +44,13 @@ export function AppSidebar() {
       <Link
         to={href}
         className={cn(
-          "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+          "flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium transition-all duration-150",
           isActive
-            ? "bg-sidebar-accent text-sidebar-accent-foreground"
-            : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+            ? "bg-accent text-accent-foreground shadow-sm"
+            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
         )}
       >
-        <Icon className="h-4 w-4 shrink-0" />
+        <Icon className={cn("h-4 w-4 shrink-0", isActive && "text-accent-foreground")} />
         {!collapsed && <span>{label}</span>}
       </Link>
     );
@@ -69,7 +69,7 @@ export function AppSidebar() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 shrink-0"
+          className="h-8 w-8 shrink-0 rounded-sm hover:bg-sidebar-accent"
           onClick={() => setCollapsed(!collapsed)}
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -80,7 +80,7 @@ export function AppSidebar() {
       <nav className="flex-1 p-3 space-y-6 overflow-y-auto">
         <div className="space-y-1">
           {!collapsed && (
-            <p className="px-3 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <p className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
               Main
             </p>
           )}
@@ -91,7 +91,7 @@ export function AppSidebar() {
 
         <div className="space-y-1">
           {!collapsed && (
-            <p className="px-3 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <p className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
               Settings
             </p>
           )}
@@ -102,7 +102,7 @@ export function AppSidebar() {
 
         <div className="space-y-1">
           {!collapsed && (
-            <p className="px-3 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <p className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
               Admin
             </p>
           )}
@@ -117,7 +117,7 @@ export function AppSidebar() {
         <Link
           to="/learn"
           className={cn(
-            "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors"
+            "flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-all duration-150"
           )}
         >
           <BookOpen className="h-4 w-4 shrink-0" />

@@ -31,19 +31,19 @@ export default function DashboardPage() {
       {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold mb-1">Welcome back!</h1>
+          <h1 className="text-2xl font-bold mb-1 tracking-tight">Welcome back!</h1>
           <p className="text-muted-foreground">
             Here's what's happening in your workspace today.
           </p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" asChild>
+          <Button variant="outline" asChild className="rounded-sm">
             <Link to="/app/library">
               <Library className="mr-2 h-4 w-4" />
               Browse Library
             </Link>
           </Button>
-          <Button asChild>
+          <Button asChild className="rounded-sm">
             <Link to="/app/prompts/new">
               <Plus className="mr-2 h-4 w-4" />
               New Prompt
@@ -57,14 +57,14 @@ export default function DashboardPage() {
         {quickStats.map((stat) => (
           <div
             key={stat.label}
-            className="p-6 rounded-xl border border-border bg-card"
+            className="p-6 rounded-sm border border-border bg-card hover:shadow-md transition-shadow"
           >
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
-                <stat.icon className="h-6 w-6 text-muted-foreground" />
+              <div className="h-12 w-12 rounded-sm bg-accent/10 flex items-center justify-center">
+                <stat.icon className="h-6 w-6 text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{stat.value}</p>
+                <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
               </div>
             </div>
@@ -80,7 +80,7 @@ export default function DashboardPage() {
         {/* Recent Prompts */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Recent Prompts</h2>
+            <h2 className="text-lg font-semibold tracking-tight">Recent Prompts</h2>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/app/library">
                 View all
@@ -93,11 +93,11 @@ export default function DashboardPage() {
               <Link
                 key={prompt.id}
                 to={`/app/prompts/${prompt.id}`}
-                className="flex items-center justify-between p-4 rounded-lg border border-border bg-card hover:shadow-md transition-all"
+                className="flex items-center justify-between p-4 rounded-sm border border-border bg-card hover:shadow-md hover:border-accent/30 transition-all"
               >
                 <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center">
-                    <Sparkles className="h-5 w-5 text-amber-600" />
+                  <div className="h-10 w-10 rounded-sm bg-accent/10 flex items-center justify-center">
+                    <Sparkles className="h-5 w-5 text-accent" />
                   </div>
                   <div>
                     <p className="font-medium">{prompt.title}</p>
@@ -121,11 +121,11 @@ export default function DashboardPage() {
           <div className="grid sm:grid-cols-2 gap-4 mt-6">
             <Link
               to="/app/prompts/new"
-              className="p-6 rounded-xl border-2 border-dashed border-border hover:border-amber-500 hover:bg-amber-50/50 transition-all group"
+              className="p-6 rounded-sm border-2 border-dashed border-border hover:border-accent hover:bg-accent/5 transition-all group"
             >
               <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-lg bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors">
-                  <Plus className="h-6 w-6 text-amber-600" />
+                <div className="h-12 w-12 rounded-sm bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                  <Plus className="h-6 w-6 text-accent" />
                 </div>
                 <div>
                   <p className="font-semibold">Create New Prompt</p>
@@ -137,11 +137,11 @@ export default function DashboardPage() {
             </Link>
             <Link
               to="/app/tests"
-              className="p-6 rounded-xl border-2 border-dashed border-border hover:border-emerald-500 hover:bg-emerald-50/50 transition-all group"
+              className="p-6 rounded-sm border-2 border-dashed border-border hover:border-primary hover:bg-primary/5 transition-all group"
             >
               <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-lg bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                  <FlaskConical className="h-6 w-6 text-emerald-600" />
+                <div className="h-12 w-12 rounded-sm bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <FlaskConical className="h-6 w-6 text-primary" />
                 </div>
                 <div>
                   <p className="font-semibold">Run Tests</p>
@@ -157,16 +157,16 @@ export default function DashboardPage() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Usage */}
-          <div className="p-6 rounded-xl border border-border bg-card">
-            <h3 className="font-semibold mb-4">Usage this month</h3>
+          <div className="p-6 rounded-sm border border-border bg-card">
+            <h3 className="font-semibold mb-4 tracking-tight">Usage this month</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-muted-foreground">Prompts</span>
                   <span className="font-medium">24 / 25</span>
                 </div>
-                <div className="h-2 rounded-full bg-muted overflow-hidden">
-                  <div className="h-full w-[96%] rounded-full bg-amber-500" />
+                <div className="h-2 rounded-sm bg-muted overflow-hidden">
+                  <div className="h-full w-[96%] rounded-sm bg-accent" />
                 </div>
               </div>
               <div>
@@ -174,20 +174,20 @@ export default function DashboardPage() {
                   <span className="text-muted-foreground">Test Runs</span>
                   <span className="font-medium">3 / 5</span>
                 </div>
-                <div className="h-2 rounded-full bg-muted overflow-hidden">
-                  <div className="h-full w-[60%] rounded-full bg-emerald-500" />
+                <div className="h-2 rounded-sm bg-muted overflow-hidden">
+                  <div className="h-full w-[60%] rounded-sm bg-primary" />
                 </div>
               </div>
             </div>
-            <Button variant="outline" size="sm" className="w-full mt-4" asChild>
+            <Button variant="outline" size="sm" className="w-full mt-4 rounded-sm" asChild>
               <Link to="/app/billing">Upgrade to Pro</Link>
             </Button>
           </div>
 
           {/* Featured Templates */}
-          <div className="p-6 rounded-xl border border-border bg-card">
+          <div className="p-6 rounded-sm border border-border bg-card">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Featured Templates</h3>
+              <h3 className="font-semibold tracking-tight">Featured Templates</h3>
               <Badge variant="accent">New</Badge>
             </div>
             <div className="space-y-3">
@@ -198,9 +198,9 @@ export default function DashboardPage() {
               ].map((template) => (
                 <div
                   key={template.title}
-                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
+                  className="flex items-center gap-3 p-3 rounded-sm bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
                 >
-                  <Star className="h-4 w-4 text-amber-500" />
+                  <Star className="h-4 w-4 text-accent" />
                   <div>
                     <p className="text-sm font-medium">{template.title}</p>
                     <p className="text-xs text-muted-foreground">{template.category}</p>
