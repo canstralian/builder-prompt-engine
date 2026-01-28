@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/PageHeader";
 import {
   Plus,
   Library,
@@ -29,28 +30,26 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold mb-1 tracking-tight">Welcome back!</h1>
-          <p className="text-muted-foreground">
-            Here's what's happening in your workspace today.
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" asChild>
-            <Link to="/app/library">
-              <Library className="mr-2 h-4 w-4" />
-              Browse Library
-            </Link>
-          </Button>
-          <Button asChild>
-            <Link to="/app/prompts/new">
-              <Plus className="mr-2 h-4 w-4" />
-              New Prompt
-            </Link>
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Welcome back!"
+        description="Here's what's happening in your workspace today."
+        actions={
+          <>
+            <Button variant="outline" asChild>
+              <Link to="/app/library">
+                <Library className="mr-2 h-4 w-4" />
+                Browse Library
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link to="/app/prompts/new">
+                <Plus className="mr-2 h-4 w-4" />
+                New Prompt
+              </Link>
+            </Button>
+          </>
+        }
+      />
 
       {/* Quick Stats */}
       <div className="grid md:grid-cols-3 gap-4">

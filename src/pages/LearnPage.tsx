@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageHeader } from "@/components/layout/PageHeader";
 import {
   FadeIn,
   StaggerContainer,
@@ -45,13 +46,13 @@ export default function LearnPage() {
     <div className="py-20">
       <div className="container">
         {/* Header */}
-        <FadeIn className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4">Resources</Badge>
-          <h1 className="text-4xl font-bold mb-4 tracking-tight">Learn Prompt Engineering</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Practical guides, frameworks, and techniques to help you craft better prompts.
-          </p>
-        </FadeIn>
+        <PageHeader
+          badge="Resources"
+          title="Learn Prompt Engineering"
+          description="Practical guides, frameworks, and techniques to help you craft better prompts."
+          centered
+          className="mb-16"
+        />
 
         {/* Search & Filters */}
         <FadeIn delay={0.1} className="max-w-4xl mx-auto mb-12">

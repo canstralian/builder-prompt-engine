@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/layout/PageHeader";
 import {
   Search,
   Filter,
@@ -96,20 +97,18 @@ export default function PromptLibraryPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">Prompt Library</h1>
-          <p className="text-muted-foreground">
-            {samplePrompts.length} prompts in your workspace
-          </p>
-        </div>
-        <Button asChild>
-          <Link to="/app/prompts/new">
-            <Plus className="mr-2 h-4 w-4" />
-            New Prompt
-          </Link>
-        </Button>
-      </div>
+      <PageHeader
+        title="Prompt Library"
+        description={`${samplePrompts.length} prompts in your workspace`}
+        actions={
+          <Button asChild>
+            <Link to="/app/prompts/new">
+              <Plus className="mr-2 h-4 w-4" />
+              New Prompt
+            </Link>
+          </Button>
+        }
+      />
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4">

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/PageHeader";
 import {
   Select,
   SelectContent,
@@ -144,26 +145,24 @@ export default function TestRunsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">Test Runs</h1>
-          <p className="text-muted-foreground">
-            Test your prompts and evaluate their quality
-          </p>
-        </div>
-        <div className="flex gap-2">
-          {testRuns.length > 0 && (
-            <Button variant="outline" onClick={exportToCSV}>
-              <Download className="mr-2 h-4 w-4" />
-              Export CSV
+      <PageHeader
+        title="Test Runs"
+        description="Test your prompts and evaluate their quality"
+        actions={
+          <>
+            {testRuns.length > 0 && (
+              <Button variant="outline" onClick={exportToCSV}>
+                <Download className="mr-2 h-4 w-4" />
+                Export CSV
+              </Button>
+            )}
+            <Button onClick={() => setDialogOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              New Test
             </Button>
-          )}
-          <Button onClick={() => setDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            New Test
-          </Button>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">

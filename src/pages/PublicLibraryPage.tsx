@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/layout/PageHeader";
 import {
   FadeIn,
   StaggerContainer,
@@ -90,13 +91,14 @@ export default function PublicLibraryPage() {
     <div className="py-20">
       <div className="container">
         {/* Header */}
-        <FadeIn className="text-center mb-16">
-          <Badge variant="accent" className="mb-4">Public Library</Badge>
-          <h1 className="text-4xl font-bold mb-4 tracking-tight">Prompt Templates</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Browse community-created prompts. Copy, customize, and use them in your own workflows.
-          </p>
-        </FadeIn>
+        <PageHeader
+          badge="Public Library"
+          badgeVariant="accent"
+          title="Prompt Templates"
+          description="Browse community-created prompts. Copy, customize, and use them in your own workflows."
+          centered
+          className="mb-16"
+        />
 
         {/* Search & Filters */}
         <FadeIn delay={0.1} className="max-w-4xl mx-auto mb-12">
