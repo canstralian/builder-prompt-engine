@@ -3,6 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EmptyState } from "@/components/ui/empty-state";
+import {
+  FadeIn,
+  StaggerContainer,
+  StaggerItem,
+  MotionCard,
+} from "@/components/ui/motion";
 import {
   Select,
   SelectContent,
@@ -165,61 +172,71 @@ export default function TestRunsPage() {
       />
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3">
-        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
-          <SelectTrigger className="w-[140px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent className="bg-popover">
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="passed">Passed</SelectItem>
-            <SelectItem value="failed">Failed</SelectItem>
-            <SelectItem value="warning">Warning</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-          </SelectContent>
-        </Select>
+      <FadeIn delay={0.1}>
+        <div className="flex flex-wrap gap-3">
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent className="bg-popover">
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="passed">Passed</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="warning">Warning</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Select value={sortOption} onValueChange={(v) => setSortOption(v as SortOption)}>
-          <SelectTrigger className="w-[160px]">
-            <ArrowUpDown className="mr-2 h-4 w-4" />
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent className="bg-popover">
-            <SelectItem value="date-desc">Newest First</SelectItem>
-            <SelectItem value="date-asc">Oldest First</SelectItem>
-            <SelectItem value="score-desc">Highest Score</SelectItem>
-            <SelectItem value="score-asc">Lowest Score</SelectItem>
-          </SelectContent>
-        </Select>
+          <Select value={sortOption} onValueChange={(v) => setSortOption(v as SortOption)}>
+            <SelectTrigger className="w-[160px]">
+              <ArrowUpDown className="mr-2 h-4 w-4" />
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent className="bg-popover">
+              <SelectItem value="date-desc">Newest First</SelectItem>
+              <SelectItem value="date-asc">Oldest First</SelectItem>
+              <SelectItem value="score-desc">Highest Score</SelectItem>
+              <SelectItem value="score-asc">Lowest Score</SelectItem>
+            </SelectContent>
+          </Select>
 
-        {statusFilter !== "all" && (
-          <Button variant="ghost" size="sm" onClick={() => setStatusFilter("all")}>
-            Clear filter
-          </Button>
-        )}
-      </div>
+          {statusFilter !== "all" && (
+            <Button variant="ghost" size="sm" onClick={() => setStatusFilter("all")}>
+              Clear filter
+            </Button>
+          )}
+        </div>
+      </FadeIn>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 border border-border bg-card shadow-xs">
-          <p className="text-2xl font-bold">{stats.total}</p>
-          <p className="text-sm text-muted-foreground">Total runs</p>
-        </div>
-        <div className="p-4 border border-border bg-card shadow-xs">
-          <p className="text-2xl font-bold text-success">
-            {stats.total > 0 ? `${stats.passRate}%` : "—"}
-          </p>
-          <p className="text-sm text-muted-foreground">Pass rate</p>
-        </div>
-        <div className="p-4 border border-border bg-card shadow-xs">
-          <p className="text-2xl font-bold">{stats.avgScore}</p>
-          <p className="text-sm text-muted-foreground">Avg. score</p>
-        </div>
-        <div className="p-4 border border-border bg-card shadow-xs">
-          <p className="text-2xl font-bold">{stats.thisWeek}</p>
-          <p className="text-sm text-muted-foreground">This week</p>
-        </div>
-      </div>
+      <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4" staggerDelay={0.05}>
+        <StaggerItem>
+          <div className="p-4 border border-border bg-card shadow-xs">
+            <p className="text-2xl font-bold">{stats.total}</p>
+            <p className="text-sm text-muted-foreground">Total runs</p>
+          </div>
+        </StaggerItem>
+        <StaggerItem>
+          <div className="p-4 border border-border bg-card shadow-xs">
+            <p className="text-2xl font-bold text-success">
+              {stats.total > 0 ? `${stats.passRate}%` : "—"}
+            </p>
+            <p className="text-sm text-muted-foreground">Pass rate</p>
+          </div>
+        </StaggerItem>
+        <StaggerItem>
+          <div className="p-4 border border-border bg-card shadow-xs">
+            <p className="text-2xl font-bold">{stats.avgScore}</p>
+            <p className="text-sm text-muted-foreground">Avg. score</p>
+          </div>
+        </StaggerItem>
+        <StaggerItem>
+          <div className="p-4 border border-border bg-card shadow-xs">
+            <p className="text-2xl font-bold">{stats.thisWeek}</p>
+            <p className="text-sm text-muted-foreground">This week</p>
+          </div>
+        </StaggerItem>
+      </StaggerContainer>
 
       {/* Loading State */}
       {isLoading && (
@@ -230,62 +247,62 @@ export default function TestRunsPage() {
 
       {/* Test Runs List */}
       {!isLoading && filteredAndSortedRuns.length > 0 && (
-        <div className="space-y-3">
+        <StaggerContainer className="space-y-3" staggerDelay={0.03}>
           {filteredAndSortedRuns.map((run) => (
-            <div
-              key={run.id}
-              onClick={() => navigate(`/app/tests/${run.id}`)}
-              className="flex items-center justify-between p-4 border border-border bg-card hover:shadow-sm transition-all group cursor-pointer"
-            >
-              <div className="flex items-center gap-4 flex-1 min-w-0">
-                <div className="h-10 w-10 bg-secondary flex items-center justify-center shrink-0">
-                  <FlaskConical className="h-5 w-5 text-secondary-foreground" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-medium truncate">{run.promptTitle}</p>
-                    <StatusIcon status={run.status} />
+            <StaggerItem key={run.id}>
+              <MotionCard
+                onClick={() => navigate(`/app/tests/${run.id}`)}
+                className="cursor-pointer"
+              >
+                <div className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className="h-10 w-10 bg-secondary flex items-center justify-center shrink-0">
+                      <FlaskConical className="h-5 w-5 text-secondary-foreground" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-medium truncate">{run.promptTitle}</p>
+                        <StatusIcon status={run.status} />
+                      </div>
+                      <p className="text-sm text-muted-foreground truncate">
+                        {run.userPrompt.slice(0, 80)}...
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground truncate">
-                    {run.userPrompt.slice(0, 80)}...
-                  </p>
+                  <div className="flex items-center gap-6 shrink-0 pl-4">
+                    <div className="text-right hidden sm:block">
+                      <p className="font-semibold">
+                        {run.overallScore !== null ? `${run.overallScore}/5` : "—"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Score</p>
+                    </div>
+                    <div className="text-right hidden md:block">
+                      <p className="text-sm text-muted-foreground flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {formatDistanceToNow(new Date(run.createdAt), { addSuffix: true })}
+                      </p>
+                    </div>
+                    <StatusBadge status={run.status} />
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-6 shrink-0 pl-4">
-                <div className="text-right hidden sm:block">
-                  <p className="font-semibold">
-                    {run.overallScore !== null ? `${run.overallScore}/5` : "—"}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Score</p>
-                </div>
-                <div className="text-right hidden md:block">
-                  <p className="text-sm text-muted-foreground flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    {formatDistanceToNow(new Date(run.createdAt), { addSuffix: true })}
-                  </p>
-                </div>
-                <StatusBadge status={run.status} />
-              </div>
-            </div>
+              </MotionCard>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       )}
 
       {/* Empty State - No runs at all */}
       {!isLoading && testRuns.length === 0 && (
-        <div className="text-center py-16 px-4">
-          <div className="inline-flex h-16 w-16 bg-muted items-center justify-center mb-4">
-            <FlaskConical className="h-8 w-8 text-muted-foreground" />
-          </div>
-          <h3 className="text-lg font-semibold mb-2">No test runs yet</h3>
-          <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-            Run tests on your prompts to evaluate their performance and track improvements.
-          </p>
-          <Button onClick={() => setDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create First Test
-          </Button>
-        </div>
+        <EmptyState
+          icon={FlaskConical}
+          title="No test runs yet"
+          description="Run tests on your prompts to evaluate their performance and track improvements."
+          action={{
+            label: "Create First Test",
+            onClick: () => setDialogOpen(true),
+            icon: Plus,
+          }}
+        />
       )}
 
       {/* Empty State - Filtered results */}

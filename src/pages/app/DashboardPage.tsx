@@ -3,6 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/layout/PageHeader";
 import {
+  FadeIn,
+  StaggerContainer,
+  StaggerItem,
+  MotionCard,
+} from "@/components/ui/motion";
+import {
   Plus,
   Library,
   FlaskConical,
@@ -52,30 +58,29 @@ export default function DashboardPage() {
       />
 
       {/* Quick Stats */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <StaggerContainer className="grid md:grid-cols-3 gap-4">
         {quickStats.map((stat) => (
-          <div
-            key={stat.label}
-            className="p-6 border border-border bg-card shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-center gap-4">
-              <div className="h-12 w-12 bg-accent/10 flex items-center justify-center border border-accent/20">
-                <stat.icon className="h-6 w-6 text-accent" />
+          <StaggerItem key={stat.label}>
+            <MotionCard className="p-6 shadow-sm">
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 bg-accent/10 flex items-center justify-center border border-accent/20">
+                  <stat.icon className="h-6 w-6 text-accent" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            </div>
-            <p className="mt-4 text-xs text-muted-foreground">
-              {stat.trend}
-            </p>
-          </div>
+              <p className="mt-4 text-xs text-muted-foreground">
+                {stat.trend}
+              </p>
+            </MotionCard>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
 
       {/* Main Content Grid */}
-      <div className="grid lg:grid-cols-3 gap-6">
+      <FadeIn delay={0.2} className="grid lg:grid-cols-3 gap-6">
         {/* Recent Prompts */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
@@ -87,34 +92,40 @@ export default function DashboardPage() {
               </Link>
             </Button>
           </div>
-          <div className="space-y-3">
+          <StaggerContainer className="space-y-3" staggerDelay={0.05}>
             {recentPrompts.map((prompt) => (
-              <Link
-                key={prompt.id}
-                to={`/app/prompts/${prompt.id}`}
-                className="flex items-center justify-between p-4 border border-border bg-card shadow-sm hover:shadow-md hover:border-primary/30 transition-all"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 bg-primary/10 flex items-center justify-center border border-primary/20">
-                    <Sparkles className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{prompt.title}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {prompt.category}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-muted-foreground hidden sm:block">
-                    <Clock className="inline mr-1 h-3 w-3" />
-                    {prompt.updatedAt}
-                  </span>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                </div>
-              </Link>
+              <StaggerItem key={prompt.id}>
+                <MotionCard
+                  className="shadow-sm"
+                  onClick={() => {}}
+                >
+                  <Link
+                    to={`/app/prompts/${prompt.id}`}
+                    className="flex items-center justify-between p-4"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 bg-primary/10 flex items-center justify-center border border-primary/20">
+                        <Sparkles className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{prompt.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {prompt.category}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm text-muted-foreground hidden sm:block">
+                        <Clock className="inline mr-1 h-3 w-3" />
+                        {prompt.updatedAt}
+                      </span>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  </Link>
+                </MotionCard>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
 
           {/* Quick Actions */}
           <div className="grid sm:grid-cols-2 gap-4 mt-6">
@@ -154,9 +165,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <StaggerContainer className="space-y-6" staggerDelay={0.1}>
           {/* Usage */}
-          <div className="p-6 border border-border bg-card shadow-sm">
+          <StaggerItem>
+            <MotionCard className="p-6 shadow-sm">
             <h3 className="font-semibold mb-4 tracking-tight">Usage this month</h3>
             <div className="space-y-4">
               <div>
@@ -181,10 +193,12 @@ export default function DashboardPage() {
             <Button variant="outline" size="sm" className="w-full mt-4" asChild>
               <Link to="/app/billing">Upgrade to Pro</Link>
             </Button>
-          </div>
+          </MotionCard>
+          </StaggerItem>
 
           {/* Featured Templates */}
-          <div className="p-6 border border-border bg-card shadow-sm">
+          <StaggerItem>
+          <MotionCard className="p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold tracking-tight">Featured Templates</h3>
               <Badge variant="accent">New</Badge>
@@ -213,9 +227,10 @@ export default function DashboardPage() {
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
-          </div>
-        </div>
-      </div>
+          </MotionCard>
+          </StaggerItem>
+        </StaggerContainer>
+      </FadeIn>
     </div>
   );
 }
