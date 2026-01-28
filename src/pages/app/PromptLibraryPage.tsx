@@ -4,12 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/ui/empty-state";
-import {
-  FadeIn,
-  StaggerContainer,
-  StaggerItem,
-  MotionCard,
-} from "@/components/ui/motion";
+import { CardGrid } from "@/components/ui/card-grid";
+import { FadeIn, MotionCard } from "@/components/ui/motion";
 import {
   Search,
   Filter,
@@ -146,88 +142,87 @@ export default function PromptLibraryPage() {
       </FadeIn>
 
       {/* Prompts Grid */}
-      <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-4" staggerDelay={0.05}>
-        {samplePrompts.map((prompt) => (
-          <StaggerItem key={prompt.id}>
-            <MotionCard className="h-full">
-              <Link
-                to={`/app/prompts/${prompt.id}`}
-                className="block p-5 h-full group"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <Badge variant="muted" className="text-xs">
-                    {prompt.category}
-                  </Badge>
-                  <div className="flex items-center gap-1">
-                    {prompt.starred && (
-                      <Star className="h-4 w-4 text-accent fill-accent" />
-                    )}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-popover">
-                        <DropdownMenuItem>
-                          <Copy className="mr-2 h-4 w-4" />
-                          Duplicate
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Eye className="mr-2 h-4 w-4" />
-                          Quick View
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
+      <CardGrid
+        items={samplePrompts}
+        keyExtractor={(prompt) => prompt.id}
+        columns={3}
+        renderItem={(prompt) => (
+          <MotionCard className="h-full">
+            <Link
+              to={`/app/prompts/${prompt.id}`}
+              className="block p-5 h-full group"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <Badge variant="muted" className="text-xs">
+                  {prompt.category}
+                </Badge>
+                <div className="flex items-center gap-1">
+                  {prompt.starred && (
+                    <Star className="h-4 w-4 text-accent fill-accent" />
+                  )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-popover">
+                      <DropdownMenuItem>
+                        <Copy className="mr-2 h-4 w-4" />
+                        Duplicate
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Eye className="mr-2 h-4 w-4" />
+                        Quick View
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
-                <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">
-                  {prompt.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                  {prompt.description}
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {prompt.tags.slice(0, 3).map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center text-xs px-2 py-0.5 bg-secondary text-secondary-foreground"
-                    >
-                      <Tag className="mr-1 h-2.5 w-2.5" />
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Folder className="h-3 w-3" />
-                    {prompt.model}
+              </div>
+              <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">
+                {prompt.title}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                {prompt.description}
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {prompt.tags.slice(0, 3).map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center text-xs px-2 py-0.5 bg-secondary text-secondary-foreground"
+                  >
+                    <Tag className="mr-1 h-2.5 w-2.5" />
+                    {tag}
                   </span>
-                  <span>{prompt.version} • {prompt.createdAt}</span>
-                </div>
-              </Link>
-            </MotionCard>
-          </StaggerItem>
-        ))}
-      </StaggerContainer>
-
-      {/* Empty state (hidden, for reference) */}
-      {samplePrompts.length === 0 && (
-        <EmptyState
-          icon={Folder}
-          title="No prompts yet"
-          description="Get started by creating your first prompt or importing from the public library."
-          action={{
-            label: "Create prompt",
-            onClick: () => {},
-            icon: Plus,
-          }}
-          secondaryAction={{
-            label: "Browse library",
-            onClick: () => {},
-          }}
-        />
-      )}
+                ))}
+              </div>
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Folder className="h-3 w-3" />
+                  {prompt.model}
+                </span>
+                <span>{prompt.version} • {prompt.createdAt}</span>
+              </div>
+            </Link>
+          </MotionCard>
+        )}
+        emptyState={
+          <EmptyState
+            icon={Folder}
+            title="No prompts yet"
+            description="Get started by creating your first prompt or importing from the public library."
+            action={{
+              label: "Create prompt",
+              onClick: () => {},
+              icon: Plus,
+            }}
+            secondaryAction={{
+              label: "Browse library",
+              onClick: () => {},
+            }}
+          />
+        }
+      />
     </div>
   );
 }

@@ -3,13 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/PageHeader";
-import {
-  FadeIn,
-  StaggerContainer,
-  StaggerItem,
-  MotionCard,
-  MotionButtonWrapper,
-} from "@/components/ui/motion";
+import { CardGrid } from "@/components/ui/card-grid";
+import { FadeIn, MotionCard, MotionButtonWrapper } from "@/components/ui/motion";
 import {
   Search,
   Copy,
@@ -126,56 +121,59 @@ export default function PublicLibraryPage() {
         </FadeIn>
 
         {/* Prompts Grid */}
-        <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {publicPrompts.map((prompt) => (
-            <StaggerItem key={prompt.id}>
-              <MotionCard className="group p-6 shadow-sm h-full flex flex-col">
-                <div className="flex items-start justify-between mb-3">
-                  <Badge variant="muted">{prompt.category}</Badge>
-                  {prompt.starred && (
-                    <div className="flex items-center gap-1 text-accent">
-                      <Star className="h-4 w-4 fill-accent" />
-                      <span className="text-xs">Featured</span>
-                    </div>
-                  )}
-                </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                  {prompt.title}
-                </h3>
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                  {prompt.description}
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {prompt.tags.slice(0, 3).map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center text-xs px-2 py-0.5 bg-secondary text-secondary-foreground"
-                    >
-                      <Tag className="mr-1 h-2.5 w-2.5" />
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
-                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <User className="h-3 w-3" />
-                    {prompt.author}
-                  </span>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
-                      <Eye className="mr-1 h-3 w-3" />
-                      View
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <Copy className="mr-1 h-3 w-3" />
-                      Copy
-                    </Button>
+        <CardGrid
+          items={publicPrompts}
+          keyExtractor={(prompt) => prompt.id}
+          columns={3}
+          gap="lg"
+          className="max-w-6xl mx-auto"
+          renderItem={(prompt) => (
+            <MotionCard className="group p-6 shadow-sm h-full flex flex-col">
+              <div className="flex items-start justify-between mb-3">
+                <Badge variant="muted">{prompt.category}</Badge>
+                {prompt.starred && (
+                  <div className="flex items-center gap-1 text-accent">
+                    <Star className="h-4 w-4 fill-accent" />
+                    <span className="text-xs">Featured</span>
                   </div>
+                )}
+              </div>
+              <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+                {prompt.title}
+              </h3>
+              <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                {prompt.description}
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {prompt.tags.slice(0, 3).map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center text-xs px-2 py-0.5 bg-secondary text-secondary-foreground"
+                  >
+                    <Tag className="mr-1 h-2.5 w-2.5" />
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <User className="h-3 w-3" />
+                  {prompt.author}
+                </span>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="sm">
+                    <Eye className="mr-1 h-3 w-3" />
+                    View
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Copy className="mr-1 h-3 w-3" />
+                    Copy
+                  </Button>
                 </div>
-              </MotionCard>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+              </div>
+            </MotionCard>
+          )}
+        />
 
         {/* CTA */}
         <FadeIn delay={0.2} className="mt-16 text-center">
