@@ -7,7 +7,6 @@ import {
   FlaskConical,
   Users,
   ArrowRight,
-  Check,
   Zap,
   Shield,
   Code2,
@@ -74,25 +73,28 @@ const testimonials = [
 export default function LandingPage() {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-hero-gradient py-20 md:py-32">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMSIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+      {/* Hero Section - Digital Precision */}
+      <section className="relative overflow-hidden bg-hero-gradient py-24 md:py-36">
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMDYiIHN0cm9rZS13aWR0aD0iMSI+PHBhdGggZD0iTTAgMCBMNDAgMCBMNDAgNDAgTDAgNDBaIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-100" />
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
         <div className="container relative">
           <div className="mx-auto max-w-3xl text-center">
-            <Badge variant="premium" className="mb-6 animate-fade-up">
+            <Badge variant="premium" className="mb-6 animate-fade-up bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground">
               <Zap className="mr-1 h-3 w-3" />
               Now in Public Beta
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-up delay-100">
-              Design prompts
+            <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-6 animate-fade-up delay-100 tracking-tight">
+              Craft prompts
               <br />
-              <span className="text-amber-400">you can trust.</span>
+              <span className="text-accent">with precision.</span>
             </h1>
-            <p className="text-lg md:text-xl text-white/70 mb-8 max-w-2xl mx-auto animate-fade-up delay-200">
+            <p className="text-lg md:text-xl text-primary-foreground/70 mb-10 max-w-2xl mx-auto animate-fade-up delay-200 leading-relaxed">
               The professional toolkit for prompt engineering. Build, test, version, and share high-quality prompts for your LLM workflows.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up delay-300">
-              <Button variant="hero" size="xl" asChild>
+              <Button variant="accent" size="xl" asChild className="shadow-lg hover:shadow-xl transition-shadow">
                 <Link to="/auth?mode=signup">
                   Start crafting
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -102,7 +104,7 @@ export default function LandingPage() {
                 <Link to="/library">Browse library</Link>
               </Button>
             </div>
-            <p className="mt-6 text-sm text-white/50 animate-fade-up delay-400">
+            <p className="mt-8 text-sm text-primary-foreground/50 animate-fade-up delay-400 tracking-wide">
               Free to start • No credit card required
             </p>
           </div>
@@ -130,7 +132,7 @@ export default function LandingPage() {
         <div className="container">
           <div className="text-center mb-16">
             <Badge variant="secondary" className="mb-4">Features</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight">
               Everything you need for professional prompt engineering
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -142,11 +144,11 @@ export default function LandingPage() {
             {features.map((feature, index) => (
               <div
                 key={feature.title}
-                className="group p-6 rounded-xl border border-border bg-card hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
+                className="group p-6 border border-border bg-card shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors">
-                  <feature.icon className="h-6 w-6 text-amber-600" />
+                <div className="h-12 w-12 bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors border border-accent/20">
+                  <feature.icon className="h-6 w-6 text-accent" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
                 <p className="text-muted-foreground">{feature.description}</p>
@@ -185,7 +187,7 @@ export default function LandingPage() {
               },
             ].map((item) => (
               <div key={item.step} className="text-center">
-                <div className="inline-flex h-12 w-12 rounded-full bg-primary text-primary-foreground items-center justify-center text-lg font-bold mb-4">
+                <div className="inline-flex h-12 w-12 bg-primary text-primary-foreground items-center justify-center text-lg font-bold mb-4 shadow-sm">
                   {item.step}
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
@@ -201,7 +203,7 @@ export default function LandingPage() {
         <div className="container">
           <div className="text-center mb-16">
             <Badge variant="secondary" className="mb-4">Testimonials</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
               Loved by prompt engineers
             </h2>
           </div>
@@ -210,7 +212,7 @@ export default function LandingPage() {
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className="p-6 rounded-xl border border-border bg-card"
+                className="p-6 border border-border bg-card shadow-sm hover:shadow-md transition-shadow"
               >
                 <p className="text-lg mb-4">"{testimonial.quote}"</p>
                 <div>
@@ -224,16 +226,17 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-32 bg-hero-gradient">
-        <div className="container">
+      <section className="py-20 md:py-32 bg-hero-gradient relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMDYiIHN0cm9rZS13aWR0aD0iMSI+PHBhdGggZD0iTTAgMCBMNDAgMCBMNDAgNDAgTDAgNDBaIi8+PC9nPjwvZz48L3N2Zz4=')]" />
+        <div className="container relative">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4 tracking-tight">
               Ready to craft better prompts?
             </h2>
-            <p className="text-lg text-white/70 mb-8">
+            <p className="text-lg text-primary-foreground/70 mb-8">
               Join thousands of builders using PromptCrafting to design, test, and ship reliable prompts.
             </p>
-            <Button variant="hero" size="xl" asChild>
+            <Button variant="accent" size="xl" asChild className="shadow-lg hover:shadow-xl transition-shadow">
               <Link to="/auth?mode=signup">
                 Start crafting — it's free
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -270,10 +273,10 @@ export default function LandingPage() {
               <Link
                 key={article.title}
                 to="/learn"
-                className="group p-6 rounded-xl border border-border bg-card hover:shadow-lg transition-all duration-200"
+                className="group p-6 border border-border bg-card shadow-sm hover:shadow-md transition-all duration-200"
               >
                 <Badge variant="muted" className="mb-3">{article.category}</Badge>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-amber-600 transition-colors">
+                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
                   {article.title}
                 </h3>
                 <p className="text-sm text-muted-foreground">{article.readTime} read</p>
