@@ -3,6 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
+  FadeIn,
+  StaggerContainer,
+  StaggerItem,
+  MotionCard,
+  MotionButtonWrapper,
+} from "@/components/ui/motion";
+import {
   Search,
   Copy,
   Eye,
@@ -83,16 +90,16 @@ export default function PublicLibraryPage() {
     <div className="py-20">
       <div className="container">
         {/* Header */}
-        <div className="text-center mb-16">
+        <FadeIn className="text-center mb-16">
           <Badge variant="accent" className="mb-4">Public Library</Badge>
-          <h1 className="text-4xl font-bold mb-4">Prompt Templates</h1>
+          <h1 className="text-4xl font-bold mb-4 tracking-tight">Prompt Templates</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Browse community-created prompts. Copy, customize, and use them in your own workflows.
           </p>
-        </div>
+        </FadeIn>
 
         {/* Search & Filters */}
-        <div className="max-w-4xl mx-auto mb-12">
+        <FadeIn delay={0.1} className="max-w-4xl mx-auto mb-12">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -114,70 +121,71 @@ export default function PublicLibraryPage() {
               </Button>
             ))}
           </div>
-        </div>
+        </FadeIn>
 
         {/* Prompts Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {publicPrompts.map((prompt) => (
-            <div
-              key={prompt.id}
-              className="p-6 rounded-xl border border-border bg-card hover:shadow-lg transition-all duration-200 group"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <Badge variant="muted">{prompt.category}</Badge>
-                {prompt.starred && (
-                  <div className="flex items-center gap-1 text-amber-500">
-                    <Star className="h-4 w-4 fill-amber-500" />
-                    <span className="text-xs">Featured</span>
-                  </div>
-                )}
-              </div>
-              <h3 className="text-lg font-semibold mb-2 group-hover:text-amber-600 transition-colors">
-                {prompt.title}
-              </h3>
-              <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                {prompt.description}
-              </p>
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {prompt.tags.slice(0, 3).map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground"
-                  >
-                    <Tag className="mr-1 h-2.5 w-2.5" />
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <div className="flex items-center justify-between pt-4 border-t border-border">
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <User className="h-3 w-3" />
-                  {prompt.author}
-                </span>
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="sm">
-                    <Eye className="mr-1 h-3 w-3" />
-                    View
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Copy className="mr-1 h-3 w-3" />
-                    Copy
-                  </Button>
+            <StaggerItem key={prompt.id}>
+              <MotionCard className="group p-6 shadow-sm h-full flex flex-col">
+                <div className="flex items-start justify-between mb-3">
+                  <Badge variant="muted">{prompt.category}</Badge>
+                  {prompt.starred && (
+                    <div className="flex items-center gap-1 text-accent">
+                      <Star className="h-4 w-4 fill-accent" />
+                      <span className="text-xs">Featured</span>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </div>
+                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+                  {prompt.title}
+                </h3>
+                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                  {prompt.description}
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {prompt.tags.slice(0, 3).map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center text-xs px-2 py-0.5 bg-secondary text-secondary-foreground"
+                    >
+                      <Tag className="mr-1 h-2.5 w-2.5" />
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <User className="h-3 w-3" />
+                    {prompt.author}
+                  </span>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm">
+                      <Eye className="mr-1 h-3 w-3" />
+                      View
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Copy className="mr-1 h-3 w-3" />
+                      Copy
+                    </Button>
+                  </div>
+                </div>
+              </MotionCard>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
         {/* CTA */}
-        <div className="mt-16 text-center">
+        <FadeIn delay={0.2} className="mt-16 text-center">
           <p className="text-muted-foreground mb-4">
             Want to share your own prompts with the community?
           </p>
-          <Button asChild>
-            <Link to="/auth?mode=signup">Create an account</Link>
-          </Button>
-        </div>
+          <MotionButtonWrapper>
+            <Button asChild>
+              <Link to="/auth?mode=signup">Create an account</Link>
+            </Button>
+          </MotionButtonWrapper>
+        </FadeIn>
       </div>
     </div>
   );

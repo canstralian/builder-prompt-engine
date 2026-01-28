@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useLearnPost } from "@/hooks/useLearnPosts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { FadeIn, MotionButtonWrapper } from "@/components/ui/motion";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import DOMPurify from "dompurify";
@@ -45,7 +46,7 @@ function MarkdownRenderer({ content }: { content: string }) {
       // Bold (using escaped HTML entities for asterisks)
       escapedLine = escapedLine.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
       // Inline code
-      escapedLine = escapedLine.replace(/`([^`]+)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
+      escapedLine = escapedLine.replace(/`([^`]+)`/g, '<code class="bg-muted px-1.5 py-0.5 text-sm font-mono">$1</code>');
       
       // Lists
       if (line.startsWith("- ")) {
@@ -101,18 +102,20 @@ export default function LearnPostPage() {
   if (error || !post) {
     return (
       <div className="py-20">
-        <div className="container max-w-3xl text-center">
+        <FadeIn className="container max-w-3xl text-center">
           <h1 className="text-2xl font-bold mb-4">Article not found</h1>
           <p className="text-muted-foreground mb-6">
             The article you're looking for doesn't exist or has been removed.
           </p>
-          <Button asChild>
-            <Link to="/learn">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Learn
-            </Link>
-          </Button>
-        </div>
+          <MotionButtonWrapper>
+            <Button asChild>
+              <Link to="/learn">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Learn
+              </Link>
+            </Button>
+          </MotionButtonWrapper>
+        </FadeIn>
       </div>
     );
   }
@@ -128,62 +131,72 @@ export default function LearnPostPage() {
     <div className="py-20">
       <div className="container max-w-3xl">
         {/* Back link */}
-        <Link
-          to="/learn"
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Learn
-        </Link>
+        <FadeIn>
+          <Link
+            to="/learn"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Learn
+          </Link>
+        </FadeIn>
 
         {/* Header */}
-        <header className="mb-10">
-          {post.category && (
-            <Badge variant="secondary" className="mb-4">
-              {post.category.name}
-            </Badge>
-          )}
-          <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-          {post.summary && (
-            <p className="text-xl text-muted-foreground mb-4">{post.summary}</p>
-          )}
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              {readTime} min read
-            </span>
-            <span className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
-              {formattedDate}
-            </span>
-          </div>
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex gap-2 mt-4 flex-wrap">
-              {post.tags.map((tag) => (
-                <Badge key={tag} variant="outline" className="text-xs">
-                  {tag}
-                </Badge>
-              ))}
+        <FadeIn delay={0.1}>
+          <header className="mb-10">
+            {post.category && (
+              <Badge variant="secondary" className="mb-4">
+                {post.category.name}
+              </Badge>
+            )}
+            <h1 className="text-4xl font-bold mb-4 tracking-tight">{post.title}</h1>
+            {post.summary && (
+              <p className="text-xl text-muted-foreground mb-4">{post.summary}</p>
+            )}
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                {readTime} min read
+              </span>
+              <span className="flex items-center gap-1">
+                <Calendar className="h-4 w-4" />
+                {formattedDate}
+              </span>
             </div>
-          )}
-        </header>
+            {post.tags && post.tags.length > 0 && (
+              <div className="flex gap-2 mt-4 flex-wrap">
+                {post.tags.map((tag) => (
+                  <Badge key={tag} variant="outline" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </header>
+        </FadeIn>
 
         {/* Content */}
-        <article className="text-foreground leading-relaxed">
-          <MarkdownRenderer content={post.body_markdown} />
-        </article>
+        <FadeIn delay={0.2}>
+          <article className="text-foreground leading-relaxed">
+            <MarkdownRenderer content={post.body_markdown} />
+          </article>
+        </FadeIn>
 
         {/* Footer */}
-        <footer className="mt-12 pt-8 border-t border-border">
-          <div className="flex items-center justify-between">
-            <Button variant="outline" asChild>
-              <Link to="/learn">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                More articles
-              </Link>
-            </Button>
-          </div>
-        </footer>
+        <FadeIn delay={0.3}>
+          <footer className="mt-12 pt-8 border-t border-border">
+            <div className="flex items-center justify-between">
+              <MotionButtonWrapper>
+                <Button variant="outline" asChild>
+                  <Link to="/learn">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    More articles
+                  </Link>
+                </Button>
+              </MotionButtonWrapper>
+            </div>
+          </footer>
+        </FadeIn>
       </div>
     </div>
   );
