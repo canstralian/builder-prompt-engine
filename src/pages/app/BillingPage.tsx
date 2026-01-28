@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/PageHeader";
 import {
   CreditCard,
   Check,
@@ -123,12 +124,10 @@ export default function BillingPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold mb-1">Billing & Plans</h1>
-        <p className="text-muted-foreground">
-          Manage your subscription and billing details.
-        </p>
-      </div>
+      <PageHeader
+        title="Billing & Plans"
+        description="Manage your subscription and billing details."
+      />
 
       {/* Current Plan */}
       <div className="p-6 border border-border bg-card shadow-sm">

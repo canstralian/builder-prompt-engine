@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/PageHeader";
 import {
   Users,
   Mail,
@@ -60,12 +61,10 @@ export default function WorkspacePage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold mb-1">Workspace Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your workspace, team members, and settings.
-        </p>
-      </div>
+      <PageHeader
+        title="Workspace Settings"
+        description="Manage your workspace, team members, and settings."
+      />
 
       {/* Workspace Info */}
       <div className="p-6 border border-border bg-card space-y-4 shadow-sm">
