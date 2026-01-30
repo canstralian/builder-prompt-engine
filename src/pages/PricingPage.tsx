@@ -85,9 +85,28 @@ const faqs = [
   },
 ];
 
+// FAQ JSON-LD structured data for rich snippets
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
 export default function PricingPage() {
   return (
     <div className="py-20 md:py-32">
+      {/* FAQ JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* Header */}
       <div className="relative overflow-hidden pb-16">
         <NetworkPattern id="pricing-header-network" opacity={0.04} variant="sparse" />
