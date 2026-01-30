@@ -113,17 +113,44 @@ export default function LearnPostPage() {
     ],
   } : null;
 
+  // Article JSON-LD structured data for rich search results
+  const articleJsonLd = post ? {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.summary || post.title,
+    datePublished: post.created_at,
+    dateModified: post.updated_at,
+    author: {
+      "@type": "Organization",
+      name: "PromptCrafting",
+      url: "https://prompt-crafting-engine.lovable.app",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "PromptCrafting",
+      url: "https://prompt-crafting-engine.lovable.app",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://prompt-crafting-engine.lovable.app/og-image.png",
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://prompt-crafting-engine.lovable.app/learn/${post.slug}`,
+    },
+    ...(post.category && {
+      articleSection: post.category.name,
+    }),
+    ...(post.tags && post.tags.length > 0 && {
+      keywords: post.tags.join(", "),
+    }),
+  } : null;
+
   if (isLoading) {
-  return (
-    <div className="py-20">
-      {/* Breadcrumb JSON-LD Structured Data */}
-      {breadcrumbJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-        />
-      )}
-      <div className="container max-w-3xl">
+    return (
+      <div className="py-20">
+        <div className="container max-w-3xl">
           <Skeleton className="h-8 w-32 mb-8" />
           <Skeleton className="h-12 w-3/4 mb-4" />
           <Skeleton className="h-6 w-1/2 mb-8" />
@@ -167,6 +194,19 @@ export default function LearnPostPage() {
 
   return (
     <div className="py-20">
+      {/* Structured Data JSON-LD */}
+      {breadcrumbJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        />
+      )}
+      {articleJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        />
+      )}
       <div className="container max-w-3xl">
         {/* Back link */}
         <FadeIn>
