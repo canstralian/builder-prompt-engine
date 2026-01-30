@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { Logo } from "@/components/layout/Logo";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { AuthBranding } from "@/components/auth/AuthBranding";
+import { NetworkPattern } from "@/components/ui/network-pattern";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function AuthPage() {
@@ -31,11 +32,18 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Form */}
-      <div className="flex-1 flex flex-col justify-center px-8 md:px-16 lg:px-24">
-        <div className="mb-8">
-          <Logo size="md" />
+      <div className="flex-1 flex flex-col justify-center px-8 md:px-16 lg:px-24 relative overflow-hidden">
+        <NetworkPattern 
+          id="auth-form-network" 
+          opacity={0.03} 
+          variant="sparse" 
+        />
+        <div className="relative z-10">
+          <div className="mb-8">
+            <Logo size="md" />
+          </div>
+          <AuthForm mode={mode} onModeChange={setMode} />
         </div>
-        <AuthForm mode={mode} onModeChange={setMode} />
       </div>
 
       {/* Right side - Branding */}
