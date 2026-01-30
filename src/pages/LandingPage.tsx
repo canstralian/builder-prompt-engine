@@ -80,35 +80,57 @@ const testimonials = [
 export default function LandingPage() {
   return (
     <div className="flex flex-col">
-      {/* Hero Section - Digital Precision */}
-      <section className="relative overflow-hidden bg-hero-gradient py-24 md:py-36">
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMDYiIHN0cm9rZS13aWR0aD0iMSI+PHBhdGggZD0iTTAgMCBMNDAgMCBMNDAgNDAgTDAgNDBaIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-100" />
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
+      {/* Hero Section - Neural Precision */}
+      <section className="relative overflow-hidden bg-hero-gradient py-28 md:py-40">
+        {/* Neural network pattern overlay */}
+        <div className="absolute inset-0 opacity-[0.08]">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="neural-grid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+                <circle cx="30" cy="30" r="1.5" fill="currentColor" className="text-white" />
+                <circle cx="0" cy="0" r="1" fill="currentColor" className="text-white" />
+                <circle cx="60" cy="0" r="1" fill="currentColor" className="text-white" />
+                <circle cx="0" cy="60" r="1" fill="currentColor" className="text-white" />
+                <circle cx="60" cy="60" r="1" fill="currentColor" className="text-white" />
+                <line x1="0" y1="0" x2="30" y2="30" stroke="currentColor" strokeWidth="0.5" className="text-white/50" />
+                <line x1="60" y1="0" x2="30" y2="30" stroke="currentColor" strokeWidth="0.5" className="text-white/50" />
+                <line x1="0" y1="60" x2="30" y2="30" stroke="currentColor" strokeWidth="0.5" className="text-white/50" />
+                <line x1="60" y1="60" x2="30" y2="30" stroke="currentColor" strokeWidth="0.5" className="text-white/50" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#neural-grid)" />
+          </svg>
+        </div>
+        {/* Gradient overlays for depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-primary/20 rounded-full blur-3xl" />
+        
         <div className="container relative">
           <div className="mx-auto max-w-3xl text-center">
             <FadeIn delay={0}>
-              <Badge variant="premium" className="mb-6 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground">
-                <Zap className="mr-1 h-3 w-3" />
+              <Badge variant="premium" className="mb-6 bg-white/10 border-white/20 text-white backdrop-blur-sm">
+                <Zap className="mr-1.5 h-3.5 w-3.5 text-accent" />
                 Now in Public Beta
               </Badge>
             </FadeIn>
             <FadeIn delay={0.1}>
-              <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-6 tracking-tight">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight leading-[1.1]">
                 Craft prompts
                 <br />
-                <span className="text-accent">with precision.</span>
+                <span className="bg-gradient-to-r from-accent via-accent to-orange-300 bg-clip-text text-transparent">
+                  with precision.
+                </span>
               </h1>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <p className="text-lg md:text-xl text-primary-foreground/70 mb-10 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-lg md:text-xl text-white/70 mb-10 max-w-2xl mx-auto leading-relaxed">
                 The professional toolkit for prompt engineering. Build, test, version, and share high-quality prompts for your LLM workflows.
               </p>
             </FadeIn>
             <FadeIn delay={0.3} className="flex flex-col sm:flex-row gap-4 justify-center">
               <MotionButtonWrapper>
-                <Button variant="accent" size="xl" asChild className="shadow-lg">
+                <Button variant="accent" size="xl" asChild className="shadow-lg shadow-accent/25 hover:shadow-xl hover:shadow-accent/30">
                   <Link to="/auth?mode=signup">
                     Start crafting
                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -116,14 +138,19 @@ export default function LandingPage() {
                 </Button>
               </MotionButtonWrapper>
               <MotionButtonWrapper>
-                <Button variant="hero-outline" size="xl" asChild>
+                <Button variant="hero-outline" size="xl" asChild className="backdrop-blur-sm">
                   <Link to="/library">Browse library</Link>
                 </Button>
               </MotionButtonWrapper>
             </FadeIn>
             <FadeIn delay={0.4}>
-              <p className="mt-8 text-sm text-primary-foreground/50 tracking-wide">
-                Free to start • No credit card required
+              <p className="mt-10 text-sm text-white/50 tracking-wide flex items-center justify-center gap-3">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                  Free to start
+                </span>
+                <span className="w-1 h-1 rounded-full bg-white/30" />
+                <span>No credit card required</span>
               </p>
             </FadeIn>
           </div>
@@ -246,18 +273,39 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-32 bg-hero-gradient relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMDYiIHN0cm9rZS13aWR0aD0iMSI+PHBhdGggZD0iTTAgMCBMNDAgMCBMNDAgNDAgTDAgNDBaIi8+PC9nPjwvZz48L3N2Zz4=')]" />
+      <section className="py-24 md:py-36 bg-hero-gradient relative overflow-hidden">
+        {/* Neural network pattern */}
+        <div className="absolute inset-0 opacity-[0.06]">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="cta-neural" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+                <circle cx="40" cy="40" r="2" fill="currentColor" className="text-white" />
+                <circle cx="0" cy="0" r="1" fill="currentColor" className="text-white" />
+                <circle cx="80" cy="0" r="1" fill="currentColor" className="text-white" />
+                <circle cx="0" cy="80" r="1" fill="currentColor" className="text-white" />
+                <circle cx="80" cy="80" r="1" fill="currentColor" className="text-white" />
+                <line x1="0" y1="0" x2="40" y2="40" stroke="currentColor" strokeWidth="0.5" className="text-white/40" />
+                <line x1="80" y1="0" x2="40" y2="40" stroke="currentColor" strokeWidth="0.5" className="text-white/40" />
+                <line x1="0" y1="80" x2="40" y2="40" stroke="currentColor" strokeWidth="0.5" className="text-white/40" />
+                <line x1="80" y1="80" x2="40" y2="40" stroke="currentColor" strokeWidth="0.5" className="text-white/40" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#cta-neural)" />
+          </svg>
+        </div>
+        {/* Accent glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-accent/15 rounded-full blur-3xl" />
+        
         <div className="container relative">
           <FadeIn className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4 tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">
               Ready to craft better prompts?
             </h2>
-            <p className="text-lg text-primary-foreground/70 mb-8">
+            <p className="text-lg md:text-xl text-white/70 mb-10">
               Join thousands of builders using PromptCrafting to design, test, and ship reliable prompts.
             </p>
             <MotionButtonWrapper>
-              <Button variant="accent" size="xl" asChild className="shadow-lg">
+              <Button variant="accent" size="xl" asChild className="shadow-lg shadow-accent/25 hover:shadow-xl hover:shadow-accent/30">
                 <Link to="/auth?mode=signup">
                   Start crafting — it's free
                   <ArrowRight className="ml-2 h-5 w-5" />
