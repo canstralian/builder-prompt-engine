@@ -82,10 +82,48 @@ export default function LearnPostPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: post, isLoading, error } = useLearnPost(slug || "");
 
+  // Breadcrumb JSON-LD structured data for search navigation
+  const breadcrumbJsonLd = post ? {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://prompt-crafting-engine.lovable.app",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Learn",
+        item: "https://prompt-crafting-engine.lovable.app/learn",
+      },
+      ...(post.category ? [{
+        "@type": "ListItem",
+        position: 3,
+        name: post.category.name,
+        item: `https://prompt-crafting-engine.lovable.app/learn?category=${post.category.slug}`,
+      }] : []),
+      {
+        "@type": "ListItem",
+        position: post.category ? 4 : 3,
+        name: post.title,
+      },
+    ],
+  } : null;
+
   if (isLoading) {
-    return (
-      <div className="py-20">
-        <div className="container max-w-3xl">
+  return (
+    <div className="py-20">
+      {/* Breadcrumb JSON-LD Structured Data */}
+      {breadcrumbJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        />
+      )}
+      <div className="container max-w-3xl">
           <Skeleton className="h-8 w-32 mb-8" />
           <Skeleton className="h-12 w-3/4 mb-4" />
           <Skeleton className="h-6 w-1/2 mb-8" />
