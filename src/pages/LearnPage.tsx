@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { NetworkPattern } from "@/components/ui/network-pattern";
 import {
   FadeIn,
   StaggerContainer,
@@ -44,15 +45,21 @@ export default function LearnPage() {
 
   return (
     <div className="py-20">
+      {/* Header */}
+      <div className="relative overflow-hidden pb-8">
+        <NetworkPattern id="learn-header-network" opacity={0.04} variant="sparse" />
+        <div className="container relative z-10">
+          <PageHeader
+            badge="Resources"
+            title="Learn Prompt Engineering"
+            description="Practical guides, frameworks, and techniques to help you craft better prompts."
+            centered
+            className="mb-16"
+          />
+        </div>
+      </div>
+
       <div className="container">
-        {/* Header */}
-        <PageHeader
-          badge="Resources"
-          title="Learn Prompt Engineering"
-          description="Practical guides, frameworks, and techniques to help you craft better prompts."
-          centered
-          className="mb-16"
-        />
 
         {/* Search & Filters */}
         <FadeIn delay={0.1} className="max-w-4xl mx-auto mb-12">
@@ -97,8 +104,11 @@ export default function LearnPage() {
         </FadeIn>
 
         {/* Articles Grid */}
-        {postsLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="relative overflow-hidden py-8">
+          <NetworkPattern id="learn-articles-network" opacity={0.025} variant="default" />
+          <div className="relative z-10">
+            {postsLoading ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="p-6 border border-border bg-card shadow-sm">
                 <Skeleton className="h-5 w-20 mb-3" />
@@ -147,11 +157,15 @@ export default function LearnPage() {
                 </Link>
               </StaggerItem>
             ))}
-          </StaggerContainer>
-        )}
+            </StaggerContainer>
+          )}
+          </div>
+        </div>
 
         {/* Newsletter */}
-        <FadeIn delay={0.2} className="mt-20 max-w-2xl mx-auto text-center p-8 bg-muted/50 border border-border">
+        <div className="relative overflow-hidden mt-20">
+          <NetworkPattern id="learn-newsletter-network" opacity={0.05} variant="dense" />
+          <FadeIn delay={0.2} className="relative z-10 max-w-2xl mx-auto text-center p-8 bg-muted/50 border border-border">
           <div className="inline-flex h-12 w-12 bg-accent/10 items-center justify-center mb-4 border border-accent/20">
             <Mail className="h-6 w-6 text-accent" />
           </div>
@@ -165,10 +179,11 @@ export default function LearnPage() {
               <Button>Subscribe</Button>
             </MotionButtonWrapper>
           </div>
-          <p className="text-xs text-muted-foreground mt-3">
-            No spam, unsubscribe anytime.
-          </p>
-        </FadeIn>
+            <p className="text-xs text-muted-foreground mt-3">
+              No spam, unsubscribe anytime.
+            </p>
+          </FadeIn>
+        </div>
       </div>
     </div>
   );

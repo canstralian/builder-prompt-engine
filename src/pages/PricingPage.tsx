@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { NetworkPattern } from "@/components/ui/network-pattern";
 
 const plans = [
   {
@@ -87,20 +88,27 @@ const faqs = [
 export default function PricingPage() {
   return (
     <div className="py-20 md:py-32">
-      <div className="container">
-        {/* Header */}
-        <div className="text-center mb-16">
+      {/* Header */}
+      <div className="relative overflow-hidden pb-16">
+        <NetworkPattern id="pricing-header-network" opacity={0.04} variant="sparse" />
+        <div className="container relative z-10">
+          <div className="text-center">
           <Badge variant="secondary" className="mb-4">Pricing</Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Simple, transparent pricing
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Start free, scale as you grow. No hidden fees, no surprises.
-          </p>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Start free, scale as you grow. No hidden fees, no surprises.
+            </p>
+          </div>
         </div>
+      </div>
 
-        {/* Plans */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-20">
+      {/* Plans */}
+      <div className="relative overflow-hidden py-8">
+        <NetworkPattern id="pricing-plans-network" opacity={0.03} variant="default" />
+        <div className="container relative z-10">
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {plans.map((plan) => (
             <div
               key={plan.name}
@@ -144,13 +152,18 @@ export default function PricingPage() {
                     <span>{limit}</span>
                   </li>
                 ))}
-              </ul>
-            </div>
-          ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
+      </div>
 
-        {/* FAQs */}
-        <div className="max-w-3xl mx-auto">
+      {/* FAQs */}
+      <div className="relative overflow-hidden py-20">
+        <NetworkPattern id="pricing-faqs-network" opacity={0.025} variant="sparse" />
+        <div className="container relative z-10">
+          <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-bold">Frequently asked questions</h2>
           </div>
@@ -162,20 +175,26 @@ export default function PricingPage() {
                   {faq.question}
                 </h3>
                 <p className="text-muted-foreground">{faq.answer}</p>
-              </div>
-            ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* CTA */}
-        <div className="text-center mt-20 p-12 rounded-2xl bg-muted/50">
+      {/* CTA */}
+      <div className="relative overflow-hidden py-12">
+        <NetworkPattern id="pricing-cta-network" opacity={0.05} variant="dense" />
+        <div className="container relative z-10">
+          <div className="text-center p-12 rounded-2xl bg-muted/50 border border-border">
           <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
           <p className="text-muted-foreground mb-6">
             We're here to help. Reach out and we'll get back to you within 24 hours.
           </p>
-          <Button variant="outline" asChild>
-            <Link to="/contact">Contact us</Link>
-          </Button>
+            <Button variant="outline" asChild>
+              <Link to="/contact">Contact us</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
