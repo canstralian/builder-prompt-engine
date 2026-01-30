@@ -1,33 +1,16 @@
 import logoImage from "@/assets/logo.png";
-
-// Subtle neural network background pattern
-function NetworkPattern() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
-      <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="auth-network" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-            <circle cx="40" cy="40" r="2" fill="currentColor" />
-            <circle cx="0" cy="0" r="1" fill="currentColor" />
-            <circle cx="80" cy="0" r="1" fill="currentColor" />
-            <circle cx="0" cy="80" r="1" fill="currentColor" />
-            <circle cx="80" cy="80" r="1" fill="currentColor" />
-            <line x1="0" y1="0" x2="40" y2="40" stroke="currentColor" strokeWidth="0.5" />
-            <line x1="80" y1="0" x2="40" y2="40" stroke="currentColor" strokeWidth="0.5" />
-            <line x1="0" y1="80" x2="40" y2="40" stroke="currentColor" strokeWidth="0.5" />
-            <line x1="80" y1="80" x2="40" y2="40" stroke="currentColor" strokeWidth="0.5" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#auth-network)" />
-      </svg>
-    </div>
-  );
-}
+import { NetworkPattern } from "@/components/ui/network-pattern";
 
 export function AuthBranding() {
   return (
     <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary via-primary/90 to-primary/80 items-center justify-center p-16 relative overflow-hidden">
-      <NetworkPattern />
+      <NetworkPattern 
+        id="auth-branding-network" 
+        opacity={0.12} 
+        size={80} 
+        variant="default"
+        colorClass="text-primary-foreground"
+      />
       <div className="max-w-md text-center relative z-10">
         <div className="mb-8">
           <div className="inline-flex items-center justify-center mb-6">
