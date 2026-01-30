@@ -96,9 +96,11 @@ export default {
   			}
   		},
   		borderRadius: {
-  			lg: 'calc(var(--radius) + 2px)',
+  			lg: 'calc(var(--radius) + 4px)',
   			md: 'var(--radius)',
-  			sm: 'calc(var(--radius))'
+  			sm: 'calc(var(--radius) - 2px)',
+  			xl: 'calc(var(--radius) + 8px)',
+  			'2xl': 'calc(var(--radius) + 12px)'
   		},
   		boxShadow: {
   			'2xs': 'var(--shadow-2xs)',
@@ -109,7 +111,8 @@ export default {
   			lg: 'var(--shadow-lg)',
   			xl: 'var(--shadow-xl)',
   			'2xl': 'var(--shadow-2xl)',
-  			glow: 'var(--shadow-glow)'
+  			glow: 'var(--shadow-glow)',
+  			'glow-accent': 'var(--shadow-glow-accent)'
   		},
   		keyframes: {
   			'accordion-down': {
