@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: "20"
       - name: Run TypeScript
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
   test:
     name: Test (Node ${{ matrix.node-version }})

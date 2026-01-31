@@ -1,0 +1,22 @@
+# Cloudflare Pages configuration for builder-prompt-engine
+# https://developers.cloudflare.com/pages/configuration/wrangler-configuration/
+
+name = "builder-prompt-engine"
+pages_build_output_dir = "dist"
+
+# Build configuration
+[build]
+command = "npm install && npm run build"
+
+# Environment variables for different deployment contexts
+# Note: Sensitive values should be set in Cloudflare Pages dashboard
+[vars]
+# Add non-sensitive environment variables here
+
+# Production environment overrides
+[env.production]
+# Production-specific settings
+
+# Preview environment overrides (for PR deployments)
+[env.preview]
+# Preview-specific settings
