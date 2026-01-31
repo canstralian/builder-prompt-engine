@@ -74,7 +74,7 @@ export const MotionCard = React.forwardRef<HTMLDivElement, MotionCardProps>(
     return (
       <motion.div
         ref={ref}
-        className={cn("border bg-card text-card-foreground", className)}
+        className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)}
         initial="rest"
         whileHover={hoverEffect ? "hover" : undefined}
         variants={cardHover}
