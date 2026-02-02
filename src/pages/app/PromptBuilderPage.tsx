@@ -95,6 +95,10 @@ export default function PromptBuilderPage() {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
+  // TODO: CODE-AUDIT - BUG: Using window.location.href breaks SPA behavior
+  // Should use React Router's useNavigate() hook for navigation
+  // TODO: CODE-AUDIT - MISSING IMPLEMENTATION: Save logic not implemented
+  // Prompt data is not being persisted to the database
   const handleSave = () => {
     // Save logic would go here
     // Note: Actual save to database will be implemented with prompts table
@@ -247,6 +251,8 @@ export default function PromptBuilderPage() {
                 <p className="text-sm text-muted-foreground mb-2">
                   Define dynamic inputs using {"{{variable_name}}"} syntax.
                 </p>
+                {/* TODO: CODE-AUDIT - CODE SMELL: Using array index as key is an anti-pattern
+                     Variables should have unique IDs to prevent rendering issues when reordering */}
                 {formData.variables.map((variable, index) => (
                   <div key={index} className="flex gap-2">
                     <Input

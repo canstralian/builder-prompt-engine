@@ -21,6 +21,8 @@ interface NewTestRunDialogProps {
   onComplete: () => void;
 }
 
+// TODO: CODE-AUDIT - CODE SMELL: ratingLabels constant is duplicated in TestRunDetailPage.tsx
+// and RatingStars component is duplicated - extract to shared location
 const ratingLabels = {
   clarity: "Clarity",
   completeness: "Completeness",

@@ -27,6 +27,8 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    // TODO: CODE-AUDIT - MISSING IMPLEMENTATION: Production error reporting not implemented
+    // Should integrate with Sentry, LogRocket, or similar error tracking service
     // Log error to console in development
     // In production, this would send to an error reporting service
     console.error("ErrorBoundary caught an error:", error);

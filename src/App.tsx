@@ -35,6 +35,8 @@ import AdminPage from "@/pages/app/AdminPage";
 import NotFound from "@/pages/NotFound";
 
 const App = () => {
+  // TODO: CODE-AUDIT - CONFIGURATION: Consider configuring QueryClient with
+  // default options for staleTime, cacheTime, and retry behavior
   const [queryClient] = useState(() => new QueryClient());
 
   return (
@@ -71,6 +73,9 @@ const App = () => {
                     <Route path="dashboard" element={<DashboardPage />} />
                     <Route path="library" element={<PromptLibraryPage />} />
                     <Route path="prompts/new" element={<PromptBuilderPage />} />
+                    {/* TODO: CODE-AUDIT - BUG: prompts/:id route uses PromptLibraryPage
+                         This should likely be a separate PromptDetailPage component
+                         that shows/edits a single prompt */}
                     <Route path="prompts/:id" element={<PromptLibraryPage />} />
                     <Route path="tests" element={<TestRunsPage />} />
                     <Route path="tests/:id" element={<TestRunDetailPage />} />

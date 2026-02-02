@@ -60,6 +60,8 @@ const features = [
   },
 ];
 
+// TODO: CODE-AUDIT - CODE SMELL: Testimonials appear to be placeholder/fake data
+// Either replace with real customer testimonials or add disclaimer that these are examples
 const testimonials = [
   {
     quote: "Finally, a tool that treats prompts like real engineering artifacts.",

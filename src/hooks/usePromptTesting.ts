@@ -48,6 +48,8 @@ export function usePromptTesting() {
         throw new Error(data.error);
       }
 
+      // TODO: CODE-AUDIT - TYPE SAFETY: Type assertion without validation
+      // Consider using zod schema validation for API response
       return data.outputs as string[];
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to generate outputs";

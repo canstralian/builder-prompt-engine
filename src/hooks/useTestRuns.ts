@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+
+// TODO: CODE-AUDIT - Consider using React Query instead of manual state management
+// for better caching, refetching, and consistency with other hooks in the project
 
 interface TestRun {
   id: string;
@@ -25,7 +28,9 @@ export function useTestRuns() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTestRuns = async () => {
+  // TODO: CODE-AUDIT - Wrap in useCallback to fix exhaustive-deps ESLint warning
+  // and prevent unnecessary re-renders
+  const fetchTestRuns = useCallback(async () => {
     if (!user) {
       setTestRuns([]);
       setIsLoading(false);
@@ -69,12 +74,15 @@ export function useTestRuns() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchTestRuns();
-  }, [user]);
+  }, [fetchTestRuns]);
 
+  // TODO: CODE-AUDIT - BUG: Potential division by zero if all test runs have null overallScore
+  // The filtered array for avgScore calculation could be empty, causing NaN
+  const runsWithScores = testRuns.filter((r) => r.overallScore !== null);
   const stats = {
     total: testRuns.length,
     passRate: testRuns.length > 0
@@ -82,12 +90,10 @@ export function useTestRuns() {
           (testRuns.filter((r) => r.status === "passed").length / testRuns.length) * 100
         )
       : 0,
-    avgScore: testRuns.length > 0
+    avgScore: runsWithScores.length > 0
       ? (
-          testRuns
-            .filter((r) => r.overallScore !== null)
-            .reduce((sum, r) => sum + (r.overallScore || 0), 0) /
-          testRuns.filter((r) => r.overallScore !== null).length
+          runsWithScores.reduce((sum, r) => sum + (r.overallScore || 0), 0) /
+          runsWithScores.length
         ).toFixed(1)
       : "—",
     thisWeek: testRuns.filter((r) => {

@@ -39,6 +39,8 @@ import { formatDistanceToNow } from "date-fns";
 type StatusFilter = "all" | "passed" | "failed" | "warning" | "pending";
 type SortOption = "date-desc" | "date-asc" | "score-desc" | "score-asc";
 
+// TODO: CODE-AUDIT - CODE SMELL: StatusIcon and StatusBadge are duplicated
+// in TestRunDetailPage.tsx - extract to shared components/ui directory
 const StatusIcon = ({ status }: { status: string }) => {
   switch (status) {
     case "passed":
@@ -274,6 +276,8 @@ export default function TestRunsPage() {
                         <p className="font-medium truncate">{run.promptTitle}</p>
                         <StatusIcon status={run.status} />
                       </div>
+                      {/* TODO: CODE-AUDIT - BUG: Always appends "..." even if prompt is shorter than 80 chars
+                           Should check length before truncating */}
                       <p className="text-sm text-muted-foreground truncate">
                         {run.userPrompt.slice(0, 80)}...
                       </p>

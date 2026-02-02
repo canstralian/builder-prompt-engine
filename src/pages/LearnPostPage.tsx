@@ -7,6 +7,8 @@ import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import DOMPurify from "dompurify";
 
+// TODO: CODE-AUDIT - LINT WARNING: Exporting utility functions alongside default component
+// triggers Fast Refresh warnings. Move estimateReadTime and escapeHtml to @/lib/utils
 export function estimateReadTime(markdown: string): number {
   const words = markdown.split(/\s+/).length;
   return Math.max(1, Math.ceil(words / 200));
@@ -24,6 +26,8 @@ export function escapeHtml(text: string): string {
   return text.replace(/[&<>"']/g, (char) => map[char]);
 }
 
+// TODO: CODE-AUDIT - CODE SMELL: Custom markdown renderer is limited
+// Consider using a proper markdown library like react-markdown for full support
 function MarkdownRenderer({ content }: { content: string }) {
   // Process markdown with proper HTML escaping and sanitization
   const html = content

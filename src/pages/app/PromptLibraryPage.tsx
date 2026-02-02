@@ -24,7 +24,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Sample prompts data
+// TODO: CODE-AUDIT - CODE SMELL: Hardcoded sample data should be fetched from database
+// Create a usePrompts hook similar to useTestRuns for proper data fetching
 const samplePrompts = [
   {
     id: "1",
@@ -207,6 +208,8 @@ export default function PromptLibraryPage() {
           </MotionCard>
         )}
         emptyState={
+          /* TODO: CODE-AUDIT - BUG: Empty onClick handlers in EmptyState actions
+             These should navigate to prompt creation or library pages */
           <EmptyState
             icon={Folder}
             title="No prompts yet"

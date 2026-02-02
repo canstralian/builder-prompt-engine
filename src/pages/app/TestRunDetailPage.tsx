@@ -27,6 +27,8 @@ interface TestRunDetail {
   createdAt: string;
 }
 
+// TODO: CODE-AUDIT - CODE SMELL: ratingLabels constant is duplicated in NewTestRunDialog.tsx
+// Should be extracted to a shared constants file
 const ratingLabels = {
   clarity: "Clarity",
   completeness: "Completeness",
@@ -34,6 +36,8 @@ const ratingLabels = {
   styleMatch: "Style Match",
 };
 
+// TODO: CODE-AUDIT - CODE SMELL: StatusBadge is duplicated in TestRunsPage.tsx
+// Should be extracted to shared components/ui directory
 const StatusBadge = ({ status }: { status: string }) => {
   const variants: Record<string, "success" | "destructive" | "accent" | "secondary"> = {
     passed: "success",

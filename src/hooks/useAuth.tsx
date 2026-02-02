@@ -1,3 +1,6 @@
+// TODO: CODE-AUDIT - LINT WARNING: Fast refresh only works when a file only exports components
+// Consider splitting AuthProvider into a separate file from the useAuth hook
+
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,6 +21,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // TODO: CODE-AUDIT - POTENTIAL RACE CONDITION: Both onAuthStateChange and getSession
+  // can trigger state updates. The listener might fire before getSession resolves,
+  // causing unnecessary re-renders. Consider using a flag to track initialization.
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -62,6 +68,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error };
   };
 
+  // TODO: CODE-AUDIT - MISSING ERROR HANDLING: signOut doesn't handle or report errors
+  // Consider returning error object like signIn/signUp for consistency
   const signOut = async () => {
     await supabase.auth.signOut();
   };

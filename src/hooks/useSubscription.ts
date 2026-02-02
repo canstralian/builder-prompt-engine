@@ -45,6 +45,8 @@ export function useSubscription() {
         throw new Error(error.message);
       }
 
+      // TODO: CODE-AUDIT - TYPE SAFETY: No validation of API response structure
+      // data.subscribed, data.productId, etc. could be undefined if API changes
       const tier = data.productId ? getTierByProductId(data.productId) : null;
 
       setState({
@@ -69,6 +71,8 @@ export function useSubscription() {
     checkSubscription();
   }, [checkSubscription]);
 
+  // TODO: CODE-AUDIT - PERFORMANCE: Consider making refresh interval configurable
+  // or only refreshing when tab is visible to reduce unnecessary API calls
   // Auto-refresh every 60 seconds
   useEffect(() => {
     if (!user) return;

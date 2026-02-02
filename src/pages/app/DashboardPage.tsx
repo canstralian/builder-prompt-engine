@@ -20,13 +20,16 @@ import {
   Star,
 } from "lucide-react";
 
-// Sample data
+// TODO: CODE-AUDIT - CODE SMELL: Hardcoded sample data should be fetched from API
+// These values don't reflect actual user data and should be replaced with real queries
 const recentPrompts = [
   { id: "1", title: "Marketing Email Generator", category: "Marketing", updatedAt: "2 hours ago" },
   { id: "2", title: "Code Review Assistant", category: "Coding", updatedAt: "5 hours ago" },
   { id: "3", title: "Product Description Writer", category: "Product", updatedAt: "1 day ago" },
 ];
 
+// TODO: CODE-AUDIT - CODE SMELL: Hardcoded statistics don't reflect actual user data
+// Should fetch real stats from database similar to useTestRuns hook
 const quickStats = [
   { label: "Total Prompts", value: "24", icon: Library, trend: "+3 this week" },
   { label: "Test Runs", value: "156", icon: FlaskConical, trend: "12 today" },
@@ -89,6 +92,8 @@ export default function DashboardPage() {
           <StaggerContainer className="space-y-3" staggerDelay={0.05}>
             {recentPrompts.map((prompt) => (
               <StaggerItem key={prompt.id}>
+                {/* TODO: CODE-AUDIT - BUG: Empty onClick handler serves no purpose
+                     Either implement navigation/action or remove the onClick prop */}
                 <MotionCard
                   className="shadow-sm"
                   onClick={() => {}}
