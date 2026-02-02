@@ -64,7 +64,7 @@ serve(async (req) => {
       logStep("No existing Stripe customer found, will create new");
     }
 
-    const origin = req.headers.get("origin") || "https://prompt-crafting-engine.lovable.app";
+    const origin = req.headers.get("origin") || "https://promptcrafting.com";
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
