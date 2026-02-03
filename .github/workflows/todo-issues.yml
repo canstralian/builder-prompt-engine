@@ -1,0 +1,62 @@
+name: TODO/FIXME → Issues
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (1 = skip issue creation)"
+        required: false
+        default: ""
+      extra_labels:
+        description: "Comma-separated extra labels"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: todo-issues-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: Scan TODO/FIXME
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ripgrep
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ripgrep
+
+      - name: Verify tools
+        run: |
+          gh --version
+          rg --version
+          gh auth status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run TODO scanner
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TODO_DRY_RUN: ${{ github.event.inputs.dry_run }}
+          TODO_EXTRA_LABELS: ${{ github.event.inputs.extra_labels }}
+        run: |
+          chmod +x scripts/todo_to_issues.sh
+          ./scripts/todo_to_issues.sh "${{ github.repository }}"
+
+      - name: Upload audit logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: todo-audit-${{ github.run_id }}
+          path: logs/todo-audit/
+          retention-days: 30
+          if-no-files-found: ignore
