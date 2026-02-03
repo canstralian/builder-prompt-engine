@@ -84,23 +84,23 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://prompt-crafting-engine.lovable.app/#organization",
+      "@id": "https://promptcrafting.com/#organization",
       name: "PromptCrafting",
-      url: "https://prompt-crafting-engine.lovable.app",
-      logo: "https://prompt-crafting-engine.lovable.app/og-image.png",
+      url: "https://promptcrafting.com",
+      logo: "https://promptcrafting.com/og-image.png",
       description: "Professional-grade tools for versioning, testing, and collaborating on AI prompts.",
       sameAs: ["https://twitter.com/PromptCrafting"]
     },
     {
       "@type": "WebSite",
-      "@id": "https://prompt-crafting-engine.lovable.app/#website",
-      url: "https://prompt-crafting-engine.lovable.app",
+      "@id": "https://promptcrafting.com/#website",
+      url: "https://promptcrafting.com",
       name: "PromptCrafting",
-      publisher: { "@id": "https://prompt-crafting-engine.lovable.app/#organization" }
+      publisher: { "@id": "https://promptcrafting.com/#organization" }
     },
     {
       "@type": "SoftwareApplication",
-      "@id": "https://prompt-crafting-engine.lovable.app/#app",
+      "@id": "https://promptcrafting.com/#app",
       name: "PromptCrafting",
       applicationCategory: "DeveloperApplication",
       operatingSystem: "Web",
@@ -122,12 +122,12 @@ const jsonLd = {
     },
     {
       "@type": "WebPage",
-      "@id": "https://prompt-crafting-engine.lovable.app/#webpage",
-      url: "https://prompt-crafting-engine.lovable.app",
+      "@id": "https://promptcrafting.com/#webpage",
+      url: "https://promptcrafting.com",
       name: "PromptCrafting - Design prompts you can trust",
       description: "Professional-grade tools for versioning, testing, and collaborating on AI prompts. Built for teams who demand reliability.",
-      isPartOf: { "@id": "https://prompt-crafting-engine.lovable.app/#website" },
-      about: { "@id": "https://prompt-crafting-engine.lovable.app/#app" }
+      isPartOf: { "@id": "https://promptcrafting.com/#website" },
+      about: { "@id": "https://promptcrafting.com/#app" }
     }
   ]
 };
