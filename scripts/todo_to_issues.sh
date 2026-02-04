@@ -88,9 +88,11 @@ ensure_label() {
     if ! gh label list --repo "$REPO" --json name -q '.[].name' 2>/dev/null | grep -qx "$LABEL"; then
         info "Creating label '$LABEL' on $REPO"
         gh label create "$LABEL" --repo "$REPO" \
+        if ! gh label create "$LABEL" --repo "$REPO" \
             --description "Auto-created from TODO/FIXME comments" \
-            --color "fbca04" 2>/dev/null || true
-    fi
+            --color "fbca04" 2>/dev/null; then
+            warn "Failed to create label '$LABEL' on $REPO. Please ensure you have appropriate permissions or that the label color/description is valid."
+        fi
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
