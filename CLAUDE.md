@@ -32,7 +32,8 @@ src/
     test-runs/       # Test run UI components
   pages/
     app/             # Protected routes (require auth): Dashboard, Library, Builder, Tests, Billing, Admin
-    *.tsx            # Public routes: Landing, Pricing, Learn, Library, Auth
+    *.tsx            # Public routes: Landing, Pricing, Learn, Library
+                     # Auth page (/auth) — unauthenticated access, not listed in README public routes
   hooks/             # Custom hooks (useAuth, useSubscription, useTestRuns, etc.)
   lib/               # Utilities (utils.ts, stripe.ts)
   integrations/
@@ -59,14 +60,16 @@ supabase/
 
 ## TypeScript Config Notes
 
-- `strictNullChecks: false` — null checks are not enforced
-- `noImplicitAny: false` — implicit `any` is allowed (not ideal, but current state)
-- `@typescript-eslint/no-unused-vars: off` — unused vars do not trigger lint errors
+> **Technical debt:** The settings below contradict the README's principle of "TypeScript strict; avoid `any`." New code should use explicit types and handle `null`/`undefined` properly even though the compiler does not enforce it yet. Enabling stricter checks is a planned follow-up.
+
+- `strictNullChecks: false` — null checks are not enforced (treat as temporary; write null-safe code anyway)
+- `noImplicitAny: false` — implicit `any` is allowed (avoid `any` in new code; prefer explicit types)
+- `@typescript-eslint/no-unused-vars: off` — unused vars do not trigger lint errors (clean up dead code when you touch a file)
 
 ## Architecture Rules
 
 - **Multi-tenancy:** Every read/write scoped by `workspace_id` (except global learn content). Never trust client-provided `workspace_id`.
-- **Routes:** Public (`/`, `/pricing`, `/learn`, `/library`, `/p/:slug`) vs Protected (`/app/*` — server-side session checks)
+- **Routes:** Public (`/`, `/pricing`, `/learn`, `/library`, `/p/:slug`) + Auth (`/auth`) vs Protected (`/app/*` — server-side session checks)
 - **Roles:** viewer (read-only) → member (create/edit own) → admin/owner (manage workspace) → site admin (`/app/admin`)
 - **Seed data:** Must be idempotent — use upserts/unique constraints, never create duplicates
 
