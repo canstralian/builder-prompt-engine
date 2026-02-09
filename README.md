@@ -27,8 +27,12 @@ Build a premium, trustworthy SaaS for prompt-engineering workflows. Prioritise c
 
 ## Architecture conventions
 ### Routes
-- Public: `/`, `/pricing`, `/learn`, `/learn/{slug}`, `/library`, `/p/{slug}`
+- Public: `/`, `/pricing`, `/learn`, `/learn/{slug}`, `/library`, `/p/{slug}`, `/auth`
 - App (auth required): `/app/*`
+
+> **Note:** `/auth` is a standalone public page (outside the marketing layout) that handles
+> sign-in and sign-up (`/auth?mode=signup`). Authenticated users are automatically
+> redirected to `/app/dashboard`.
 
 ### App shell
 - Under `/app`: left sidebar with workspace switcher + primary navigation.
