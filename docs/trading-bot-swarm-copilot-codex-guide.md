@@ -8,6 +8,7 @@ This guide defines how to configure GitHub Copilot and Codex in the Trading Bot 
 - **Mandatory for code changes**: run unit tests and linting for any change that affects runtime behavior.
 - **Documentation-only changes**: skip tests and linting unless the docs reference code that must be validated.
 - **Local-first validation**: validate in local/dev environments before pushing.
+- **Workflow optimization**: use CI `paths-ignore` or change detection to avoid unnecessary jobs on docs-only updates.
 
 ### Code style
 - Enforce consistent formatting via Prettier/ESLint (or equivalent for each language).
@@ -33,11 +34,13 @@ This guide defines how to configure GitHub Copilot and Codex in the Trading Bot 
 - Define quality gates: lint, unit tests, security scans, and type checks.
 - Block merges on quality gate failures.
 - Maintain a consistent build pipeline across repositories.
+- Keep CI secrets scoped to least privilege and rotate on a fixed cadence.
 
 ### Version control
 - Use conventional commits and semantic versioning.
 - Require PR review and automated checks before merge.
 - Tag releases via CI for traceability.
+- Prefer protected branches, signed commits, and linear history where possible.
 
 ## Custom instruction behavior for Codex and Copilot
 ### Example rules
@@ -80,6 +83,7 @@ assistant:
 **Trigger conditions**
 - Run on pull requests targeting `main`.
 - Run on pushes to `main`.
+- Skip the workflow when only documentation changes are present (optional but recommended).
 
 **Quality gate steps**
 - Checkout repository
@@ -92,10 +96,12 @@ assistant:
 ```yaml
 name: quality-gate
 on:
-  push:
+  push: &trigger_config
     branches: [main]
-  pull_request:
-    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+  pull_request: *trigger_config
 
 jobs:
   quality-gate:
