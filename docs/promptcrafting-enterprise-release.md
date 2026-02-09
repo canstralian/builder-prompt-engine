@@ -53,7 +53,7 @@
 
 ### 3.1. Security Audits and Vulnerability Assessments
 - **SAST**: Enable GitHub Advanced Security (CodeQL) or run Semgrep in CI.
-- **SCA**: Use Dependabot/Renovate and npm audit (or Snyk) with a defined SLA.
+- **SCA**: Use Dependabot/Renovate for automated dependency updates. For CI, run scans with a dedicated tool like Snyk or use `npm audit --production` to focus on production vulnerabilities, with a defined SLA.
 - **Secret scanning**: Enforce secret scanning in GitHub and pre-commit hooks for local checks.
 - **Pen testing**: Schedule annual third-party assessments and quarterly internal threat modeling.
 
