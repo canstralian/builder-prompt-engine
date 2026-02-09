@@ -1,14 +1,14 @@
 # Trading Bot Swarm: GitHub Copilot + Codex Configuration Guide
 
 ## Purpose and scope
-This guide standardizes how GitHub Copilot and Codex operate within the Trading Bot Swarm ecosystem. It ensures consistent quality, secure automation, and repeatable delivery across trading services, infrastructure, and data pipelines. Copilot is treated as a **pair programmer** with strict behavioral rules: follow repository conventions, respect security defaults, run required tests and linters for code changes, and avoid speculative or risky modifications. Codex follows the same expectations with heightened automation discipline, including scoped changes and explicit validation evidence.
+This guide defines how GitHub Copilot and Codex operate inside the Trading Bot Swarm ecosystem to deliver **consistent, secure, and high-quality automation** across strategy engines, execution services, risk controls, and data pipelines. Copilot is treated as a **pair programmer** with strict behavioral rules: follow repository conventions, avoid risky modifications, and always provide verifiable validation evidence. Codex follows the same expectations with even tighter automation discipline, focusing on scoped changes and explicit testing proof.
 
 ## Configuration overview
 ### Testing and linting
 - **Mandatory for code changes**: run unit/integration tests and linting for any change that affects runtime behavior.
 - **Documentation-only changes**: skip tests/linters unless the docs reference code that must be validated.
 - **Local-first validation**: validate in local/dev environments before pushing.
-- **Quality gate alignment**: match CI quality gates locally to reduce pipeline failures.
+- **Quality gate alignment**: mirror CI quality gates locally to minimize pipeline failures.
 
 ### Code style
 - Enforce consistent formatting through Prettier/ESLint (or language-specific equivalents).
@@ -65,19 +65,23 @@ assistant:
     - avoid_unreviewed_dependencies: true
     - request_clarification_on_ambiguity: true
     - limit_changes_to_scope: true
+    - provide_validation_evidence: true
   quality:
     - lint_on_change: true
     - format_on_save: true
     - prefer_small_commits: true
+    - maintain_backward_compatibility: true
   async_patterns:
     - use_async_await: true
     - set_timeouts: true
     - idempotent_retries_only: true
+    - enforce_circuit_breakers: true
   security:
     - no_hardcoded_secrets: true
     - validate_external_inputs: true
     - least_privilege_tokens: true
     - redact_sensitive_logs: true
+    - require_dependency_review: true
   observability:
     - structured_logs: true
     - include_correlation_id: true
@@ -89,7 +93,7 @@ assistant:
 **Trigger conditions**
 - Run on pull requests targeting `main`.
 - Run on pushes to `main`.
-- Skip the workflow when only documentation changes are present (optional but recommended).
+- Skip the workflow when only documentation changes are present.
 
 **Quality gate steps**
 - Checkout repository
