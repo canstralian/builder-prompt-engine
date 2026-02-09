@@ -27,9 +27,9 @@
 ## 2. Architectural Review and Enhancements
 
 ### 2.1. Current Architecture Overview
-- **Frontend**: Vite + React + TypeScript SPA, using Tailwind and a shadcn-style component layer for UI consistency.【F:package.json†L1-L66】
-- **Data services**: Supabase client library plus project-level Supabase configuration for migrations/functions.【F:package.json†L42-L66】【F:supabase/config.toml†L1-L2】
-- **Routing and state**: React Router for client-side navigation and React Query for async data workflows.【F:package.json†L57-L66】
+- **Frontend**: Vite + React + TypeScript SPA, using Tailwind and a shadcn-style component layer for UI consistency. ([package.json, L1-L66](</package.json#L1-L66>))
+- **Data services**: Supabase client library plus project-level Supabase configuration for migrations/functions. ([package.json, L42-L66](</package.json#L42-L66>), [supabase/config.toml, L1-L2](</supabase/config.toml#L1-L2>))
+- **Routing and state**: React Router for client-side navigation and React Query for async data workflows. ([package.json, L57-L66](</package.json#L57-L66>))
 
 ### 2.2. Scalability Considerations
 - **Read optimization**: Introduce caching for read-heavy pages (CDN/edge caching for public pages).
