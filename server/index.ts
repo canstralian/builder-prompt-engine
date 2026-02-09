@@ -4,12 +4,23 @@ import connectPgSimple from "connect-pg-simple";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { pool } from "./db";
+import { securityHeaders, apiRateLimit } from "./middleware";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+app.use(securityHeaders);
+
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: false, limit: "1mb" }));
+
+app.use("/api/", apiRateLimit);
 
 const PgSession = connectPgSimple(session);
+
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  log("WARNING: SESSION_SECRET not set. Using fallback for development only.");
+}
 
 app.use(
   session({
@@ -18,11 +29,14 @@ app.use(
       tableName: "session",
       createTableIfMissing: true,
     }),
-    secret: process.env.SESSION_SECRET || "promptcrafting-session-secret-dev",
+    secret: sessionSecret || "promptcrafting-session-secret-dev",
     resave: false,
     saveUninitialized: false,
+    name: "sid",
     cookie: {
-      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     },
   })
@@ -58,9 +72,10 @@ app.use((req, res, next) => {
 
   app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+    const message = process.env.NODE_ENV === "production"
+      ? "Internal Server Error"
+      : err.message || "Internal Server Error";
     res.status(status).json({ message });
-    throw err;
   });
 
   if (app.get("env") === "development") {

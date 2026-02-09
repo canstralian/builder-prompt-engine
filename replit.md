@@ -4,6 +4,16 @@
 PromptCrafting is a professional-grade SaaS application for designing, testing, and versioning AI prompts. Originally built with Lovable (Supabase backend), now migrated to Replit's fullstack JavaScript template.
 
 ## Recent Changes
+- **Feb 2026**: Security & performance hardening
+  - Added helmet middleware for HTTP security headers
+  - Added rate limiting on auth routes (20 req/15min) and API routes (200 req/15min)
+  - Improved session security: httpOnly cookies, sameSite=lax, secure cookie name
+  - Added Zod-based input validation on auth routes with password strength requirements
+  - Sanitized error responses to prevent leaking internal details in production
+  - Created reusable auth middleware (requireAuth, requireAdmin) for route protection
+  - Added request body size limits (1MB)
+  - Increased bcrypt salt rounds from 10 to 12
+  - Added parameter validation on ID-based routes
 - **Feb 2026**: Migrated from Supabase to Replit fullstack JS template
   - Replaced Supabase Auth with session-based auth (bcrypt + express-session)
   - Replaced Supabase edge functions with Express API routes
@@ -31,8 +41,9 @@ client/                  # Frontend (React + Vite)
   index.html
 
 server/                  # Backend (Express + Node.js)
-  index.ts               # Express app setup with session middleware
+  index.ts               # Express app setup with security middleware, session config
   routes.ts              # API routes (auth, learn, drafts, test-runs, admin)
+  middleware.ts           # Security middleware (helmet, rate limiting, auth guards, error sanitization)
   storage.ts             # IStorage interface + DatabaseStorage implementation
   db.ts                  # Drizzle + pg Pool setup
   vite.ts                # Vite dev server middleware
