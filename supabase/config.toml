@@ -14,3 +14,19 @@ verify_jwt = false
 
 [functions.run-prompt-test]
 verify_jwt = false
+
+# Worker Job API Functions
+# These functions handle the DAG workflow for project deployment
+# Service role authentication is enforced at the function level
+
+[functions.jobs-stage-templates]
+verify_jwt = false
+
+[functions.jobs-apply-config]
+verify_jwt = false
+
+[functions.jobs-init-memory]
+verify_jwt = false
+
+[functions.jobs-validate]
+verify_jwt = false
