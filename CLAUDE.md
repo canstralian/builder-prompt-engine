@@ -18,7 +18,7 @@ npm run db:seed      # Seed learn categories and posts (tsx server/seed.ts)
 - **Frontend:** React 18 + TypeScript 5.8 + Vite 7
 - **Backend:** Express 5 + TypeScript (bundled with esbuild)
 - **Database:** PostgreSQL via Drizzle ORM (schema in `shared/schema.ts`)
-- **Auth:** Passport.js (local strategy) + express-session (PostgreSQL-backed via connect-pg-simple) + bcrypt
+- **Auth:** express-session (PostgreSQL-backed via connect-pg-simple) + bcrypt
 - **UI:** shadcn/ui (55+ Radix primitives) + TailwindCSS 3 + Framer Motion
 - **State/Data:** TanStack React Query (client) + Drizzle ORM (server)
 - **Forms:** React Hook Form + Zod validation
