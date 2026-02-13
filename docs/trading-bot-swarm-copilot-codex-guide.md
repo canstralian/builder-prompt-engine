@@ -3,7 +3,15 @@
 ## Purpose and scope
 This guide standardizes how GitHub Copilot and Codex are configured and used across the Trading Bot Swarm ecosystem (strategy services, execution engines, risk controls, data pipelines, and platform tooling). The objective is consistency, code quality, and secure automation.
 
+Scope includes:
+- Local development behavior (prompting, suggestions, and edit constraints).
+- Repository-level quality controls (linting, tests, type checks, and code style).
+- Delivery controls (CI/CD gates, semantic release, and protected version tagging).
+- Operational safety (secrets handling, observability, and incident-aware automation).
+
 Copilot is treated as a **pair programmer** with strict behavioral rules: it should assist implementation while respecting repository conventions, safety boundaries, and validation requirements. Codex follows the same standards with stronger automation guardrails, including scope control and explicit evidence of checks performed.
+
+> Policy baseline: generated code is a draft until validated by project checks and human review.
 
 ## Configuration overview
 
@@ -48,6 +56,7 @@ Copilot is treated as a **pair programmer** with strict behavioral rules: it sho
 - Require PR reviews and protected branches.
 - Prefer signed commits/tags for provenance.
 - Ensure release tags are generated from CI after successful gates.
+- Keep PRs focused and small enough for risk-aware review (especially for order routing and risk modules).
 
 ## Custom instruction behavior for Codex and Copilot
 
@@ -58,6 +67,7 @@ Copilot is treated as a **pair programmer** with strict behavioral rules: it sho
 4. Avoid introducing new dependencies without explicit approval and rationale.
 5. Include a concise change summary plus validation evidence.
 6. Apply docs-only optimization: skip heavy checks when only documentation changed.
+7. Prefer secure defaults over convenience when suggesting API/client code.
 
 ### Full custom instructions (conceptual YAML)
 ```yaml
@@ -92,6 +102,7 @@ assistant_policy:
       run_typecheck: true
       run_tests: true
       block_if_any_fail: true
+      require_ci_green_before_merge: true
     for_docs_only_changes:
       run_lint: false
       run_typecheck: false
@@ -170,6 +181,7 @@ jobs:
 - Enforce conventional commits for clean changelog generation.
 - Run release automation only on protected mainline branches.
 - Publish tags/releases only after successful quality gates.
+- Require signed, immutable tags for auditable rollbacks.
 
 ```yaml
 name: release
@@ -203,6 +215,7 @@ jobs:
 - Use Dependabot/Renovate for routine dependency updates.
 - Schedule security scans and allow manual runs.
 - Fail on high/critical vulnerabilities and triage with SLA targets.
+- Include secret scanning and supply-chain visibility (SBOM/provenance) where possible.
 
 ```yaml
 name: security-and-dependency-scan
@@ -227,6 +240,8 @@ jobs:
         run: npm audit --audit-level=high
       - name: Static analysis
         run: npm run lint
+      - name: Secret scan (example)
+        run: echo "Integrate gitleaks/trufflehog in production workflows"
 ```
 
 ## Contributor workflow and review standards
@@ -247,6 +262,7 @@ jobs:
 - Required CI checks must pass.
 - At least one approved review from a code owner or designated maintainer.
 - Validate risky changes with reproducible evidence (test output, benchmarks, or replay data).
+- For trading-critical paths, require evidence of failure-mode behavior (timeouts, retries, and safe fallback).
 
 ## Troubleshooting and optimization tips
 - **Flaky tests**: isolate network dependencies, seed deterministic data, and add retries only for known transient infrastructure failures.
