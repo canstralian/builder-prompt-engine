@@ -314,7 +314,7 @@ jobs:
 - Update whenever coding standards, security policy, CI architecture, or runtime versions change.
 - Track updates in release notes and notify contributors of policy-impacting changes.
 
-## Scoring-function governance (the "soul" of the system)
+## Scoring-function governance
 For trading automation, document scoring priorities per domain:
 
 - **Performance-first**: maximize latency/throughput outcomes for fast decision paths.
