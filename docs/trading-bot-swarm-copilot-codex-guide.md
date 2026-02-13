@@ -1,117 +1,153 @@
 # Trading Bot Swarm: GitHub Copilot + Codex Configuration Guide
 
 ## Purpose and scope
-This guide standardizes how GitHub Copilot and Codex operate within the Trading Bot Swarm ecosystem. It ensures consistent quality, secure automation, and repeatable delivery across trading services, infrastructure, and data pipelines. Copilot is treated as a **pair programmer** with strict behavioral rules: follow repository conventions, respect security defaults, run required tests and linters for code changes, and avoid speculative or risky modifications. Codex follows the same expectations with heightened automation discipline, including scoped changes and explicit validation evidence.
+This guide standardizes how GitHub Copilot and Codex are configured and used across the Trading Bot Swarm ecosystem (strategy services, execution engines, risk controls, data pipelines, and platform tooling). The objective is consistency, code quality, and secure automation.
+
+Copilot is treated as a **pair programmer** with strict behavioral rules: it should assist implementation while respecting repository conventions, safety boundaries, and validation requirements. Codex follows the same standards with stronger automation guardrails, including scope control and explicit evidence of checks performed.
 
 ## Configuration overview
+
 ### Testing and linting
-- **Mandatory for code changes**: run unit/integration tests and linting for any change that affects runtime behavior.
-- **Documentation-only changes**: skip tests/linters unless the docs reference code that must be validated.
-- **Local-first validation**: validate in local/dev environments before pushing.
-- **Quality gate alignment**: match CI quality gates locally to reduce pipeline failures.
+- **Required for code changes**: run linting, type checks, and relevant tests when runtime behavior can change.
+- **Docs-only exception**: skip lint/test workflows for documentation-only changes unless documentation references executable examples that were modified.
+- Align local validation with CI quality gates to reduce drift.
+- Fail fast on broken checks; do not merge with unresolved quality issues.
 
-### Code style
-- Enforce consistent formatting through Prettier/ESLint (or language-specific equivalents).
-- Prefer explicit types and interfaces for shared domain models.
-- Keep functions small and composable with clear, single-responsibility boundaries.
-- Align naming with trading domain terms (orders, fills, strategies, risk limits).
+### Code style and maintainability
+- Enforce formatting and lint rules (ESLint + Prettier or language-equivalent tooling).
+- Prefer explicit types/interfaces for cross-service contracts.
+- Keep functions cohesive and side effects isolated.
+- Use domain-consistent naming (orders, fills, positions, risk limits, strategies).
 
-### Async patterns and reliability
-- Prefer `async/await` over mixed callback/promise styles.
-- Always use timeouts and abort signals for external I/O.
-- Apply retries only to idempotent operations with exponential backoff and jitter.
-- Guard critical trade flows with circuit breakers and rate-limit awareness.
+### Async patterns and resilience
+- Standardize on `async/await`; avoid mixed paradigms.
+- Require timeouts and cancellation for external calls.
+- Retry only idempotent operations, with exponential backoff + jitter.
+- Add circuit-breaker and rate-limit handling on exchange-facing integrations.
 
 ### Security defaults
-- Never hardcode secrets; use environment variables and managed secrets.
-- Validate all external inputs (API payloads, webhooks, user data).
-- Enforce least-privilege access for tokens and service accounts.
-- Log securely: avoid emitting secrets or PII in logs.
+- No hardcoded credentials or tokens.
+- Validate/sanitize all external inputs (webhooks, APIs, file imports).
+- Apply least-privilege access for CI, bots, and service identities.
+- Redact secrets/PII in logs and error messages.
 
 ### Logging and observability
-- Emit structured logs (JSON) with correlation/trace IDs.
-- Track metrics for trade latency, fill success rate, and strategy health.
-- Use distributed tracing across exchange adapters and risk engines.
-- Standardize alert thresholds for critical failures and latency spikes.
+- Emit structured logs with request/correlation IDs.
+- Track key metrics: order latency, fill ratio, reject/error rate, risk-trigger frequency.
+- Instrument traces across API gateway, strategy orchestration, and exchange adapters.
+- Define and tune alert thresholds for reliability and trading safety events.
 
 ### CI/CD integration
-- Define quality gates: lint, tests, type checks, and security scans.
-- Block merges when quality gates fail.
-- Use a consistent build pipeline across all repos.
-- Rotate secrets on a fixed cadence and scope CI permissions minimally.
+- Quality gates: lint, type check, tests, and security scanning.
+- Require all mandatory checks before merge.
+- Keep pipelines deterministic with pinned versions and lockfiles.
+- Rotate secrets and minimize workflow permissions.
 
 ### Version control
 - Use conventional commits and semantic versioning.
-- Require PR review and automated checks prior to merge.
-- Tag releases via CI for traceability.
-- Prefer protected branches, signed commits, and linear history when possible.
+- Require PR reviews and protected branches.
+- Prefer signed commits/tags for provenance.
+- Ensure release tags are generated from CI after successful gates.
 
 ## Custom instruction behavior for Codex and Copilot
-### Example rules
-- Do not bypass lint/test failures.
-- Avoid unreviewed dependencies or framework changes.
-- Ask for clarification when requirements are ambiguous.
-- Provide diff-focused change summaries with validation notes.
+
+### Example behavioral rules
+1. Never bypass failing lint/tests for code changes.
+2. Keep changes tightly scoped to the requested outcome.
+3. Request clarification when requirements are ambiguous or contradictory.
+4. Avoid introducing new dependencies without explicit approval and rationale.
+5. Include a concise change summary plus validation evidence.
+6. Apply docs-only optimization: skip heavy checks when only documentation changed.
 
 ### Full custom instructions (conceptual YAML)
 ```yaml
-assistant:
-  name: trading-bot-swarm
-  role: pair-programmer
-  behavior:
-    - obey_repo_conventions: true
-    - run_tests_for_code_changes: true
-    - skip_tests_for_docs_only: true
-    - avoid_unreviewed_dependencies: true
-    - request_clarification_on_ambiguity: true
-    - limit_changes_to_scope: true
-  quality:
-    - lint_on_change: true
-    - format_on_save: true
-    - prefer_small_commits: true
+assistant_policy:
+  shared_principles:
+    pair_programming_mode: true
+    follow_repo_conventions: true
+    scope_control:
+      disallow_unrelated_refactors: true
+      keep_commits_atomic: true
+    ambiguity_handling:
+      ask_for_clarification_when_unclear: true
+      state_assumptions_explicitly: true
+
+  copilot:
+    role: in-editor_pair_programmer
+    behavior:
+      prefer_existing_patterns: true
+      avoid_dependency_surprises: true
+      generate_small_reviewable_suggestions: true
+
+  codex:
+    role: task_automation_agent
+    behavior:
+      execute_requested_changes_end_to_end: true
+      report_commands_and_results: true
+      include_validation_evidence: true
+
+  quality_gates:
+    for_code_changes:
+      run_lint: true
+      run_typecheck: true
+      run_tests: true
+      block_if_any_fail: true
+    for_docs_only_changes:
+      run_lint: false
+      run_typecheck: false
+      run_tests: false
+      require_spelling_or_link_check: optional
+
   async_patterns:
-    - use_async_await: true
-    - set_timeouts: true
-    - idempotent_retries_only: true
+    use_async_await: true
+    require_timeout_and_abort_signal: true
+    retries:
+      only_idempotent_paths: true
+      strategy: exponential_backoff_with_jitter
+
   security:
-    - no_hardcoded_secrets: true
-    - validate_external_inputs: true
-    - least_privilege_tokens: true
-    - redact_sensitive_logs: true
+    no_hardcoded_secrets: true
+    validate_all_external_input: true
+    least_privilege_credentials: true
+    redact_sensitive_logs: true
+
   observability:
-    - structured_logs: true
-    - include_correlation_id: true
-    - emit_metrics: true
-    - trace_external_calls: true
+    structured_logging: true
+    include_correlation_ids: true
+    emit_metrics_for_critical_paths: true
+    trace_external_calls: true
 ```
 
-## GitHub Actions workflow example (lint + test)
-**Trigger conditions**
-- Run on pull requests targeting `main`.
-- Run on pushes to `main`.
-- Skip the workflow when only documentation changes are present (optional but recommended).
+## GitHub workflow example: lint + test automation
 
-**Quality gate steps**
-- Checkout repository
-- Set up Node.js
-- Install dependencies
-- Lint
-- Type check (if applicable)
-- Run tests
+### Trigger conditions
+- Pull requests targeting `main`.
+- Pushes to `main`.
+- Ignore docs-only paths so quality gates focus on executable changes.
+
+### `quality-gate` job steps
+1. Checkout repository.
+2. Setup runtime/toolchain.
+3. Install dependencies.
+4. Run linter.
+5. Run type check.
+6. Run tests.
 
 ```yaml
 name: quality-gate
 on:
-  push: &trigger_config
+  push: &quality_trigger
     branches: [main]
     paths-ignore:
-      - "**/*.md"
       - "docs/**"
-  pull_request: *trigger_config
+      - "**/*.md"
+  pull_request: *quality_trigger
 
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -120,21 +156,20 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - name: Install
+      - name: Install dependencies
         run: npm ci
       - name: Lint
         run: npm run lint
-      - name: Type Check
+      - name: Type check
         run: npm run typecheck
-      - name: Tests
+      - name: Test
         run: npm test
 ```
 
-## Semantic release and version tagging
-**Best practices**
-- Use conventional commits.
-- Generate changelogs and version tags automatically.
-- Tag releases only after quality gates pass.
+## Best-practice workflow: semantic release and version tagging
+- Enforce conventional commits for clean changelog generation.
+- Run release automation only on protected mainline branches.
+- Publish tags/releases only after successful quality gates.
 
 ```yaml
 name: release
@@ -143,8 +178,12 @@ on:
     branches: [main]
 
 jobs:
-  release:
+  semantic-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -154,64 +193,72 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
-      - run: npx semantic-release
+      - name: Semantic release
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-## Security and dependency scanning
-- Enable Dependabot (or Renovate) for dependency updates.
-- Run static analysis and vulnerability scans in CI.
-- Fail builds on critical vulnerabilities with defined SLAs.
+## Best-practice workflow: security and dependency scanning
+- Use Dependabot/Renovate for routine dependency updates.
+- Schedule security scans and allow manual runs.
+- Fail on high/critical vulnerabilities and triage with SLA targets.
 
 ```yaml
-name: security-scan
+name: security-and-dependency-scan
 on:
   schedule:
     - cron: "0 3 * * 1"
   workflow_dispatch:
 
 jobs:
-  security:
+  security-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: npm ci
-      - run: npm audit --audit-level=high
-      - run: npx eslint .
+      - name: Dependency audit
+        run: npm audit --audit-level=high
+      - name: Static analysis
+        run: npm run lint
 ```
 
-## Contributor guidelines
+## Contributor workflow and review standards
+
 ### Proposing changes
-- Create a feature branch from `main`.
-- Use conventional commit messages.
-- Include tests for behavioral changes and update fixtures if needed.
+- Branch from `main` with a focused scope.
+- Use conventional commits.
+- Include tests for behavior changes; update fixtures/contracts where necessary.
 
 ### Review criteria
-- Correctness and adherence to trading rules.
-- Security posture (input validation, secret handling, RBAC).
-- Observability coverage (logs, metrics, traces).
-- Test coverage and stability.
+- Functional correctness and risk-control alignment.
+- Security posture (input validation, secret management, access boundaries).
+- Observability completeness (logs, metrics, traces).
+- Performance impact and failure-mode handling.
+- Clarity and maintainability of implementation.
 
 ### Validation process
-- CI quality gates must pass.
-- At least one approving reviewer.
-- Evidence of local testing for risky changes.
+- Required CI checks must pass.
+- At least one approved review from a code owner or designated maintainer.
+- Validate risky changes with reproducible evidence (test output, benchmarks, or replay data).
 
 ## Troubleshooting and optimization tips
-- **Flaky tests**: isolate external dependencies and use deterministic fixtures.
-- **Slow CI**: enable caching and split lint/test jobs.
-- **Lint errors**: run formatter locally before committing.
-- **API throttling**: add backoff and rate-limit handling with metrics.
-- **Dependency drift**: regenerate lockfiles with approved tool versions.
+- **Flaky tests**: isolate network dependencies, seed deterministic data, and add retries only for known transient infrastructure failures.
+- **Slow CI**: cache dependencies/build artifacts and split lint/test jobs for parallel execution.
+- **High false-positive lint noise**: tighten rules gradually and use rule ownership per package.
+- **Rate-limit failures**: add adaptive backoff, queueing, and alerting on throttle metrics.
+- **Dependency drift**: pin toolchain versions, regenerate lockfiles in CI, and review update cadence.
 
 ## Maintenance schedule
-- Review this guide quarterly.
-- Update for new tooling or version upgrades.
-- Retire deprecated workflows and add new best practices as needed.
+- Review this guide **quarterly**.
+- Update whenever coding standards, security policy, CI architecture, or runtime versions change.
+- Track updates in release notes and notify contributors of policy-impacting changes.
 
 ---
 **Goal**: Standardize excellence and strengthen the reliability, performance, and safety of the Trading Bot Swarm ecosystem.
