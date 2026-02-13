@@ -91,19 +91,19 @@ export default function LearnPostPage() {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://prompt-crafting-engine.lovable.app",
+        item: "https://promptcrafting.com",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Learn",
-        item: "https://prompt-crafting-engine.lovable.app/learn",
+        item: "https://promptcrafting.com/learn",
       },
       ...(post.category ? [{
         "@type": "ListItem",
         position: 3,
         name: post.category.name,
-        item: `https://prompt-crafting-engine.lovable.app/learn?category=${post.category.slug}`,
+        item: `https://promptcrafting.com/learn?category=${post.category.slug}`,
       }] : []),
       {
         "@type": "ListItem",
@@ -124,20 +124,20 @@ export default function LearnPostPage() {
     author: {
       "@type": "Organization",
       name: "PromptCrafting",
-      url: "https://prompt-crafting-engine.lovable.app",
+      url: "https://promptcrafting.com",
     },
     publisher: {
       "@type": "Organization",
       name: "PromptCrafting",
-      url: "https://prompt-crafting-engine.lovable.app",
+      url: "https://promptcrafting.com",
       logo: {
         "@type": "ImageObject",
-        url: "https://prompt-crafting-engine.lovable.app/og-image.png",
+        url: "https://promptcrafting.com/og-image.png",
       },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://prompt-crafting-engine.lovable.app/learn/${post.slug}`,
+      "@id": `https://promptcrafting.com/learn/${post.slug}`,
     },
     ...(post.category && {
       articleSection: post.category.name,
