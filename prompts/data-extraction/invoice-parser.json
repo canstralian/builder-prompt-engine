@@ -1,0 +1,96 @@
+{
+  "id": "invoice-parser",
+  "name": "Invoice Data Extractor",
+  "version": "1.0.0",
+  "description": "Extracts structured data from invoice text, including vendor, line items, totals, and dates.",
+  "author": "prompt-crafting-team",
+  "tags": ["extraction", "finance", "structured-output"],
+  "inputs": [
+    {
+      "name": "invoice_text",
+      "type": "string",
+      "description": "The raw text content of the invoice.",
+      "required": true
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "description": "Expected currency code (ISO 4217).",
+      "required": false,
+      "default": "USD"
+    }
+  ],
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a document data extraction assistant specializing in invoices. Extract structured data accurately from invoice text. If a field cannot be determined from the text, set it to null. Do not fabricate data. All monetary values should be numbers, not strings."
+    },
+    {
+      "role": "user",
+      "content": "Extract data from this invoice (currency: {{currency}}):\n\n{{invoice_text}}\n\nReturn a JSON object with: vendor_name, invoice_number, invoice_date (ISO 8601), due_date (ISO 8601 or null), line_items (array of {description, quantity, unit_price, total}), subtotal, tax, and total."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Simple invoice",
+      "inputs": {
+        "invoice_text": "INVOICE #2024-001\nFrom: Acme Corp\nDate: 2024-03-15\nDue: 2024-04-15\n\nWeb Development Services  10 hrs @ $150/hr  $1,500.00\nHosting (Annual)          1      @ $240/yr   $240.00\n\nSubtotal: $1,740.00\nTax (8%): $139.20\nTotal: $1,879.20",
+        "currency": "USD"
+      },
+      "expected_output": "{\"vendor_name\": \"Acme Corp\", \"invoice_number\": \"2024-001\", \"invoice_date\": \"2024-03-15\", \"due_date\": \"2024-04-15\", \"line_items\": [{\"description\": \"Web Development Services\", \"quantity\": 10, \"unit_price\": 150, \"total\": 1500}, {\"description\": \"Hosting (Annual)\", \"quantity\": 1, \"unit_price\": 240, \"total\": 240}], \"subtotal\": 1740, \"tax\": 139.20, \"total\": 1879.20}",
+      "assertions": [
+        { "type": "contains", "value": "Acme Corp" },
+        { "type": "contains", "value": "2024-001" },
+        { "type": "matches_regex", "value": "\"total\":\\s*1879\\.2" }
+      ]
+    }
+  ],
+  "output_format": {
+    "type": "json",
+    "schema": {
+      "type": "object",
+      "required": ["vendor_name", "invoice_number", "invoice_date", "line_items", "total"],
+      "properties": {
+        "vendor_name": { "type": "string" },
+        "invoice_number": { "type": "string" },
+        "invoice_date": { "type": "string", "format": "date" },
+        "due_date": { "type": ["string", "null"], "format": "date" },
+        "line_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["description", "quantity", "unit_price", "total"],
+            "properties": {
+              "description": { "type": "string" },
+              "quantity": { "type": "number" },
+              "unit_price": { "type": "number" },
+              "total": { "type": "number" }
+            }
+          }
+        },
+        "subtotal": { "type": "number" },
+        "tax": { "type": "number" },
+        "total": { "type": "number" }
+      }
+    },
+    "description": "Structured invoice data with vendor info, line items, and totals."
+  },
+  "safety": {
+    "constraints": [
+      "Do not fabricate data not present in the invoice",
+      "Set unknown fields to null rather than guessing"
+    ],
+    "pii_redaction": true
+  },
+  "eval": {
+    "scorers": [
+      { "name": "json-schema", "weight": 0.6 },
+      { "name": "regex", "weight": 0.4, "config": { "pattern": "vendor_name" } }
+    ],
+    "threshold": 0.8
+  },
+  "model": {
+    "temperature": 0.1,
+    "max_tokens": 2048
+  }
+}

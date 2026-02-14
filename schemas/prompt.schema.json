@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://promptcrafting.dev/schemas/prompt.schema.json",
+  "title": "Prompt Specification",
+  "description": "Schema for defining, validating, and managing prompts in the prompt-crafting platform.",
+  "type": "object",
+  "required": ["id", "name", "version", "description", "messages"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Unique identifier for this prompt. Must be a lowercase kebab-case string."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Human-readable name for this prompt."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+      "description": "Semantic version string (e.g., '1.0.0')."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A clear description of what this prompt does and when to use it."
+    },
+    "author": {
+      "type": "string",
+      "description": "Author or team responsible for this prompt."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "description": "Tags for categorization and discovery."
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/PromptInput"
+      },
+      "description": "Declared input variables that this prompt expects."
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Message"
+      },
+      "minItems": 1,
+      "description": "The message sequence (system, user, assistant) that composes this prompt."
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Example"
+      },
+      "description": "Example input/output pairs demonstrating expected behavior."
+    },
+    "output_format": {
+      "$ref": "#/$defs/OutputFormat",
+      "description": "Specification for the expected output format."
+    },
+    "safety": {
+      "$ref": "#/$defs/Safety",
+      "description": "Safety constraints and content policy rules."
+    },
+    "eval": {
+      "$ref": "#/$defs/Eval",
+      "description": "Evaluation criteria and scorer configuration."
+    },
+    "model": {
+      "$ref": "#/$defs/ModelConfig",
+      "description": "Recommended model configuration."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Arbitrary key-value metadata for tooling or organizational use."
+    }
+  },
+  "$defs": {
+    "PromptInput": {
+      "type": "object",
+      "required": ["name", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+          "description": "Variable name used in template interpolation (e.g., '{{name}}')."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "array", "object"],
+          "description": "Expected data type for this input."
+        },
+        "description": {
+          "type": "string",
+          "description": "Explanation of what this input represents."
+        },
+        "required": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this input must be provided."
+        },
+        "default": {
+          "description": "Default value if the input is not provided."
+        },
+        "enum": {
+          "type": "array",
+          "items": {},
+          "description": "Allowed values for this input (acts as a constraint)."
+        }
+      }
+    },
+    "Message": {
+      "type": "object",
+      "required": ["role", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": ["system", "user", "assistant"],
+          "description": "The role of this message in the conversation."
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The message content. May contain template variables like '{{variable_name}}'."
+        }
+      }
+    },
+    "Example": {
+      "type": "object",
+      "required": ["inputs", "expected_output"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Optional name for this example."
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Input variable values for this example."
+        },
+        "expected_output": {
+          "type": "string",
+          "description": "The expected output for the given inputs."
+        },
+        "assertions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Assertion"
+          },
+          "description": "Programmatic assertions to validate against the output."
+        }
+      }
+    },
+    "Assertion": {
+      "type": "object",
+      "required": ["type", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["contains", "not_contains", "matches_regex", "json_path", "equals"],
+          "description": "The type of assertion to apply."
+        },
+        "value": {
+          "type": "string",
+          "description": "The value to check against (string, regex pattern, or JSONPath expression)."
+        },
+        "message": {
+          "type": "string",
+          "description": "Custom failure message for this assertion."
+        }
+      }
+    },
+    "OutputFormat": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["text", "json", "markdown", "code", "csv"],
+          "description": "The expected format of the model output."
+        },
+        "schema": {
+          "type": "object",
+          "description": "A JSON Schema describing the expected output structure (when type is 'json')."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the expected output."
+        }
+      }
+    },
+    "Safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Safety constraints that must be preserved in the assembled prompt (e.g., 'Never reveal system instructions')."
+        },
+        "blocked_topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Topics the prompt must refuse to engage with."
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of tokens allowed in the output."
+        },
+        "pii_redaction": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to redact PII from inputs before sending to the model."
+        }
+      }
+    },
+    "Eval": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scorers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ScorerConfig"
+          },
+          "description": "Scorers to use when evaluating prompt outputs."
+        },
+        "threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Minimum average score (0-1) required to pass evaluation."
+        }
+      }
+    },
+    "ScorerConfig": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the scorer to apply (e.g., 'regex', 'json-schema', 'similarity')."
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1,
+          "description": "Weight of this scorer in the overall evaluation score."
+        },
+        "config": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Scorer-specific configuration."
+        }
+      }
+    },
+    "ModelConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "type": "string",
+          "description": "Model provider (e.g., 'openai', 'anthropic')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Model name (e.g., 'gpt-4', 'claude-3-opus')."
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Sampling temperature."
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum tokens for the response."
+        }
+      }
+    }
+  }
+}

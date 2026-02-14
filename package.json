@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "validate:prompts": "tsx scripts/validate-prompts.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

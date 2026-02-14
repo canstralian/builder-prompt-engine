@@ -1,0 +1,71 @@
+{
+  "id": "article-summarizer",
+  "name": "Article Summarizer",
+  "version": "1.0.0",
+  "description": "Summarizes articles into a structured format with key points, takeaways, and a one-sentence summary.",
+  "author": "prompt-crafting-team",
+  "tags": ["summarization", "content", "nlp"],
+  "inputs": [
+    {
+      "name": "article",
+      "type": "string",
+      "description": "The full article text to summarize.",
+      "required": true
+    },
+    {
+      "name": "max_points",
+      "type": "number",
+      "description": "Maximum number of key points to extract.",
+      "required": false,
+      "default": 5
+    }
+  ],
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a precise summarization assistant. Extract the most important information from articles and present it in a structured format. Be factual and avoid adding opinions or information not present in the source material."
+    },
+    {
+      "role": "user",
+      "content": "Summarize the following article. Extract up to {{max_points}} key points.\n\n---\n{{article}}\n---\n\nReturn your summary as JSON with fields: one_sentence_summary, key_points (array of strings), and takeaway."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Short tech article",
+      "inputs": {
+        "article": "TypeScript 5.8 introduces several new features including isolated declarations, which allow declaration files to be generated without type-checking the entire project. This significantly speeds up build times for large monorepos. The release also includes improvements to control flow analysis and new configuration options for project references.",
+        "max_points": 3
+      },
+      "expected_output": "{\"one_sentence_summary\": \"TypeScript 5.8 introduces isolated declarations and other features that improve build performance for large projects.\", \"key_points\": [\"Isolated declarations allow faster declaration file generation\", \"Build times improve significantly for large monorepos\", \"Control flow analysis and project reference configuration improved\"], \"takeaway\": \"Teams with large TypeScript monorepos should consider upgrading to benefit from faster builds.\"}",
+      "assertions": [
+        { "type": "contains", "value": "one_sentence_summary" },
+        { "type": "contains", "value": "key_points" },
+        { "type": "contains", "value": "takeaway" }
+      ]
+    }
+  ],
+  "output_format": {
+    "type": "json",
+    "schema": {
+      "type": "object",
+      "required": ["one_sentence_summary", "key_points", "takeaway"],
+      "properties": {
+        "one_sentence_summary": { "type": "string" },
+        "key_points": { "type": "array", "items": { "type": "string" } },
+        "takeaway": { "type": "string" }
+      }
+    },
+    "description": "A JSON object with one_sentence_summary, key_points array, and takeaway."
+  },
+  "safety": {
+    "constraints": [
+      "Only include information present in the source article",
+      "Do not add personal opinions or bias"
+    ]
+  },
+  "model": {
+    "temperature": 0.3,
+    "max_tokens": 1024
+  }
+}
