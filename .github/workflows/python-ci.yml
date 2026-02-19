@@ -1,0 +1,75 @@
+name: Python CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch: {}
+
+concurrency:
+  group: python-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test & Lint (Python)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: prompt_crafting_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/prompt_crafting_test
+      AUTHORIZED_TARGETS: example.com,test.local
+      API_KEYS: test-key
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Black (format check)
+        run: black --check prompt_crafting/
+
+      - name: Run isort (import sort check)
+        run: isort --check-only prompt_crafting/
+
+      - name: Run Flake8 (lint)
+        run: flake8 prompt_crafting/ --max-line-length=79 --extend-ignore=E203,W503
+
+      - name: Run mypy (type check)
+        run: mypy prompt_crafting/ --ignore-missing-imports
+
+      - name: Run pytest with coverage
+        run: pytest --cov=prompt_crafting prompt_crafting/tests/ -v --cov-report=term-missing --cov-fail-under=80
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy placeholder
+        run: echo "Deployment triggered for main branch"
